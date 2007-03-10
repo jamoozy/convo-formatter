@@ -30,7 +30,7 @@ public class GUI implements Runnable
 		JFrame.setDefaultLookAndFeelDecorated(true);
 
 		// Create and set up the window.
-		JFrame frame = new JFrame("Fuck your mother.");
+		JFrame frame = new JFrame("Bless your mother.");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JLabel label = new JLabel("Here's a label.");
