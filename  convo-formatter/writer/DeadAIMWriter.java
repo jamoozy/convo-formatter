@@ -49,6 +49,7 @@ public class DeadAIMWriter implements Writer
 	////////////////////////////////////////////////////////////////////////////
 	
 	private FileWriter writer;  // Thing we write to.
+	private Date date;          // The date of this file.
 	private String me;          // The name of the screen name to be red.
 
 	/**
@@ -75,15 +76,17 @@ public class DeadAIMWriter implements Writer
 		if (writer != null)
 			throw new ExistingFileException("Already writing file: " + writer);
 		
-		// TODO: Make this add a '0' where needed.
-		String name = String.format("%s\\%d-%02d-%02d [%s].htm",
+		// Store the date for comparison with other sessions.
+		date = session.getDate();
+		String name = String.format("%s%d-%02d-%02d [%s].htm",
 									dir,
-									session.getDate().getYear(),
-									session.getDate().getMonth(),
-									session.getDate().getDate(),
-									session.getDate().getDay());
-		
+									date.getYear(),
+									date.getMonth(),
+									date.getDate(),
+									date.getDay());
+
 		File file = new File(name);
+		System.out.println("Writing to file:" + file.getAbsolutePath());
 
 		// If the file alredy exists, prompt for overwrite.
 //		if (file.exists())
@@ -95,8 +98,9 @@ public class DeadAIMWriter implements Writer
 //				return false;
 //			}
 //		}
+		// Nevermind ... just append regardless.
 		
-		// Create a new file and associated file writer.
+		// Create a new file writer.
 		try
 		{
 			if (!file.exists())
@@ -118,12 +122,27 @@ public class DeadAIMWriter implements Writer
 			return false;
 		}
 		
+		return addSession(session);
+	}
+	
+	/**
+	 * Adds a session to the file accessed via the filewriter.
+	 * 
+	 * @param session The Session to write to the file.
+	 * 
+	 * @return Returns <code>true</code> if the sessions was successfully
+	 *         written and <code>false</code> otherwise.
+	 */
+	public boolean addSession(Session session)
+	{
+		if (session.getDate().equals(date)) return false;
+
 		Iterator<Event> events = session.iterator();
 		
 		while (events.hasNext())
 			addEvent(events.next());
 		
-		return closeFile();
+		return true;
 	}
 
 	/**
@@ -217,9 +236,9 @@ public class DeadAIMWriter implements Writer
 	 * 
 	 * @return <code>true</code> if the file was successfully closed.  <code>false</code> otherwise.
 	 */
-	private boolean closeFile()
+	public boolean closeFile()
 	{
-		try
+		if (writer != null) try
 		{
 			writer.write("\n</body></html>\n");
 			writer.flush();
@@ -231,7 +250,7 @@ public class DeadAIMWriter implements Writer
 		{
 			e.printStackTrace();
 			return false;
-		}
+		} else return true;
 	}
 
 	/**

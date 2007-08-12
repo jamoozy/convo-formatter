@@ -247,4 +247,30 @@ public class Date
 	{
 		return year + "/" + month + "/" + date + " -- (" + day + ")";
 	}
+	
+	/**
+	 * Determines if the passed date object is equivalent to this one.
+	 * 
+	 * @param that The other date to compare <code>this</code> with.
+	 * 
+	 * @return Returns <code>true</code> if the dates are the same
+	 *         and <code>false</code> otherwise.
+	 */
+	public boolean equals(Object that)
+	{
+		return that instanceof Date && this.equals((Date)that);
+	}
+
+	/**
+	 * Determines if the passed date object is equivalent to this one.
+	 * 
+	 * @param that The other date to compare <code>this</code> with.
+	 * 
+	 * @return Returns <code>true</code> if the dates are the same
+	 *         and <code>false</code> otherwise.
+	 */
+	public boolean equals(Date that)
+	{
+		return this.year == that.year && this.month == that.month && this.date == that.date;
+	}
 }

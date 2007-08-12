@@ -16,30 +16,32 @@ public class Main
 		
 		try
 		{
+			// Reads the file and loads it into the tr object.
 			tr.loadFile("./Trillian example.txt");
+			System.out.println("File loaded.");
 		}
 		catch (IOException e)
 		{
 			System.err.println("Unexpected exception: " + e.getClass().getSimpleName());
 			e.printStackTrace();
+			System.exit(0);
 		}
 		
 		Iterator<Session> iter = tr.iterator();
+
+		// TODO: Enclose this in a further loop to handle the case where
+		// Trillian wants to have one file but AIM wants to have multiple files.
 		
+		// The first one is a special call.
+		Session session = iter.next();
+		DeadAIMWriter writer = new DeadAIMWriter(session.getMySN());
+		writer.makeFile("./", session);
+
+		// Each subsiquent session is another call.
 		while (iter.hasNext())
-		{
-			Session session = iter.next();
-			DeadAIMWriter writer = new DeadAIMWriter(session.getMySN());
-			
-			writer.newFile("./", session.getDate());
-			
-			Iterator<Event> events = session.iterator();
-			
-			while (events.hasNext())
-				writer.addEvent(events.next());
-			
-			writer.closeFile();
-		}
+			writer.addSession(iter.next());
+
+		writer.closeFile();
 		
 		System.out.println("Done.");
 	}

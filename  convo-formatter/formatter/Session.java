@@ -72,7 +72,7 @@ public class Session
 	 * @return <code>true</code> if there is an already active <code>Session</code>
 	 *         <code>false</code> otherwise.
 	 */
-	public static boolean isActiveSession()
+	public static boolean sessionIsActive()
 	{
 		return session != null;
 	}

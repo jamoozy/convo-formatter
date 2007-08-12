@@ -109,7 +109,7 @@ public class TrillianReader implements Reader
 					
 					// Make sure a different Session isn't already active.  This can happen when
 					// the user was unexpectedly disconnected.
-					if (Session.isActiveSession())
+					if (Session.sessionIsActive())
 					{
 						Session.getSession().add(new Notification(Notification.Type.END_SESSION, null));
 						Session.closeSession();
@@ -138,7 +138,7 @@ public class TrillianReader implements Reader
 					int second = Integer.parseInt(line.substring(after+20, after+22));
 
 					// Check that there is a Session active.
-					if (!Session.isActiveSession()) return;
+					if (!Session.sessionIsActive()) return;
 					
 					// Add the end-session Notification.
 					Session.getSession().add(new Notification(Notification.Type.END_SESSION, new Timestamp(hour, minute, second)));
