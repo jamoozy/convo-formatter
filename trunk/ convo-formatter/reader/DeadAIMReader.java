@@ -3,6 +3,7 @@ package reader;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
+import formatter.FontState;
 
 import formatter.Session;
 
@@ -10,6 +11,7 @@ import formatter.Session;
 public class DeadAIMReader implements Reader
 {
 	private Vector<Session> sessions;  // The Sessions stored in this log file.
+	private FontState fs;              // keeps track of how the HTML tags have effected text.
 
 	/**
 	 * Loads the {@link Session}s of this file into this class.

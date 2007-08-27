@@ -11,13 +11,13 @@ import exception.AlreadyActiveException;
  * For some formats this is one file, for others it is not.
  * <p>
  * This class doubles as its own factory.  It allows only one <code>Session</code> at a time.
- * To create a new <code>Session</code>, call {@link #makeSession()}.  Once you're done, call
- * {@link #closeSession()} before trying to start another session.  At any time, you can call
- * {@link #getSession()} to access the active <code>Session</code>.
+ * To create a new <code>Session</code>, call {@link Session#makeSession(String,String,Date)}.
+ * Once you're done, call {@link Session#closeSession()} before trying to start another session.
+ * At any time, you can call {@link Session#getSession()} to access the active <code>Session</code>.
  * <p>
  * I have decided to call the person that created the log, i.e. the person that saved this log
- * "me" and the person that is talking with "me", "you".  Therefore, {@link getMySN()} returns
- * the name of the creator of this log, and {@link getYourSN()} returns the name of the person
+ * "me" and the person that is talking with "me", "you".  Therefore, {@link #getMySN()} returns
+ * the name of the creator of this log, and {@link #getYourSN()} returns the name of the person
  * talking with "me" -- the other guy.
  *
  * @author Andrew Correa
@@ -106,7 +106,7 @@ public class Session
 	
 	/**
 	 * Appends the contents of the {@link String} object to the end of the last
-	 * {@link Message}.  Assumes the last {@link Event} passed to {@link add()}
+	 * {@link Message}.  Assumes the last {@link Event} passed to {@link #add()}
 	 * was of type {@link Message}.  If the last <code>Event</code> was not of
 	 * type <code>Message</code> then an exception is thrown.
 	 *
@@ -163,6 +163,25 @@ public class Session
 	public Date getDate()
 	{
 		return date;
+	}
+	
+	/**
+	 * Sets the date to a new value.  This is needed when a conversation
+	 * starts one day, but ends another.  In this case it is desirable to
+	 * list the conversation as having occured on the day the conversation
+	 * ended, as opposed to the day it was begun.
+	 * 
+	 * @param date The new <code>Date</code> to change to.
+	 * 
+	 * @throws IllegalArgumentException if the passed date occurs before
+	 *         the date already registered to the session.
+	 */
+	public void setDate(Date date)
+	{
+		if (date.before(this.date))
+			throw new IllegalArgumentException("The passed date occured before the start date.");
+
+		this.date = date;
 	}
 	
 	/**

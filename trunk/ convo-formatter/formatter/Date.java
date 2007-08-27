@@ -273,4 +273,28 @@ public class Date
 	{
 		return this.year == that.year && this.month == that.month && this.date == that.date;
 	}
+	
+	/**
+	 * Determines if this date is after the passed date.
+	 * 
+	 * @param that The Date to compare against.
+	 * 
+	 * @return true if this date is after that date.
+	 */
+	public boolean after(Date that)
+	{
+		return this.year > that.year || this.month > that.month || that.date > that.date;
+	}
+
+	/**
+	 * Determines if this date is before the passed date.
+	 * 
+	 * @param that The Date to compare against.
+	 * 
+	 * @return true if this date is before that date.
+	 */
+	public boolean before(Date that)
+	{
+		return this.year < that.year || this.month < that.month || this.date < that.date;
+	}
 }

@@ -102,21 +102,18 @@ public class TrillianReader implements Reader
 					String yourSN = line.substring(between+1, after);
 					
 					// Find the year, month, date (day of the month), and day (day of the week).
-					int year = Integer.parseInt(line.substring(after+23, after+27));
-					int month = Date.monthToInt(line.substring(after+7, after+10));
-					int date = Integer.parseInt(line.substring(after+11, after+13));
-					String day = Date.dayToFullName(line.substring(after+3, after+6));
+					Date date = readDate(line, after+3);
 					
 					// Make sure a different Session isn't already active.  This can happen when
 					// the user was unexpectedly disconnected.
 					if (Session.sessionIsActive())
 					{
-						Session.getSession().add(new Notification(Notification.Type.END_SESSION, null));
+						Session.getSession().add(new Notification(Notification.Type.END_SESSION, date, null));
 						Session.closeSession();
 					}
 						
 					// Create the new Session.
-					sessions.add(Session.makeSession(mySN, yourSN, new Date(year, month, date, day)));
+					sessions.add(Session.makeSession(mySN, yourSN, date));
 
 					// Build the Timestamp for when this was created.
 					int hour = Integer.parseInt(line.substring(after+14, after+16));
@@ -124,7 +121,7 @@ public class TrillianReader implements Reader
 					int second = Integer.parseInt(line.substring(after+20, after+22));
 					
 					// Add the "we're started now" Notification.
-					Session.getSession().add(new Notification(Notification.Type.START_SESSION, new Timestamp(hour, minute, second)));
+					Session.getSession().add(new Notification(Notification.Type.START_SESSION, date, new Timestamp(hour, minute, second)));
 
 				}
 				else if (line.substring(8,13).equals("Close"))
@@ -132,16 +129,28 @@ public class TrillianReader implements Reader
 					// Fine where the SN stops (hence the length).
 					int after = line.indexOf(')');
 					
+					// Build the Date.
+					Date date = readDate(line, after+3);
+
 					// Build the Timestamp.
-					int hour = Integer.parseInt(line.substring(after+14, after+16));
-					int minute = Integer.parseInt(line.substring(after+17, after+19));
-					int second = Integer.parseInt(line.substring(after+20, after+22));
+					Timestamp ts = new Timestamp(
+					         Integer.parseInt(line.substring(after+14, after+16)),
+					         Integer.parseInt(line.substring(after+17, after+19)),
+					         Integer.parseInt(line.substring(after+20, after+22)));
 
 					// Check that there is a Session active.
 					if (!Session.sessionIsActive()) return;
 					
 					// Add the end-session Notification.
-					Session.getSession().add(new Notification(Notification.Type.END_SESSION, new Timestamp(hour, minute, second)));
+					try
+					{
+						Session.getSession().add(new Notification(Notification.Type.END_SESSION, date, ts));
+						Session.getSession().setDate(date);
+					}
+					catch (IllegalArgumentException e)
+					{
+						throw new FileFormatException("Error on line " + lineNumber + ", date is too early.");
+					}
 
 					// Close the Session.
 					Session.closeSession();
@@ -159,11 +168,22 @@ public class TrillianReader implements Reader
 				if (line.charAt(11) == '*')
 				{
 					if (line.contains(" signed on at "))
-						Session.getSession().add(new Notification(Notification.Type.BUDDY_LOG_ON, ts));
+					{
+						int start = line.lastIndexOf('"') + 15;
+						Date date = readDate(line, start);
+						Session.getSession().add(new Notification(Notification.Type.BUDDY_LOG_ON, date, ts));
+					}
 					else if (line.contains(" signed off at "))
-						Session.getSession().add(new Notification(Notification.Type.BUDDY_LOG_OFF, ts));
+					{
+						int start = line.lastIndexOf('"') + 16;
+						Date date = readDate(line, start);
+						Session.getSession().add(new Notification(Notification.Type.BUDDY_LOG_OFF, date, ts));
+					}
 					else if (line.contains("You have been disconnected."))
-						Session.getSession().add(new Notification(Notification.Type.DISCONNECT, ts));
+					{	
+						Date date = readDate(line, 43);
+						Session.getSession().add(new Notification(Notification.Type.DISCONNECT, date, ts));
+					}
 					else if (line.contains("Auto"))
 					{
 						Session current = Session.getSession();
@@ -206,6 +226,25 @@ public class TrillianReader implements Reader
 				}
 		}
 	}
+	
+	/**
+	 * Reads in the date given a line and starting point of the Date to be read.
+	 * 
+	 * @param line The line on which the date info lies.
+	 * @param start The start on the line where the date info starts.
+	 * 
+	 * @return The <code>Date</code> on the given line at the given point.
+	 */
+	private Date readDate(String line, int start)
+	{
+		int year = Integer.parseInt(line.substring(start+20, start+24));
+		int month = Date.monthToInt(line.substring(start+4, start+7));
+		int date = Integer.parseInt(line.substring(start+8, start+10));
+		String day = Date.dayToFullName(line.substring(start, start+3));
+		
+		return new Date(year, month, date, day);
+	}
+	
 	
 	/**
 	 * Returns an <code>{@link Iterator}&lt;{@link Session}&gt;</code> of the
