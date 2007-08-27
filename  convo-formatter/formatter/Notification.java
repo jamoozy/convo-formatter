@@ -39,14 +39,16 @@ public class Notification implements Event
 	////////////////////////////////////////////////////////////////////////////
 
 	private Type type;        // The Type this Event is.
+	private Date date;        // Date of occurance.
 	private Timestamp time;   // The time this Event occurred.
 	
 	/**
 	 * Creates a new <code>Notification</code> object with the passed parameters.
 	 */
-	public Notification(Type type, Timestamp time)
+	public Notification(Type type, Date date, Timestamp time)
 	{
 		this.type = type;
+		this.date = date;
 		this.time = time;
 	}
 	
@@ -58,6 +60,18 @@ public class Notification implements Event
 	public Type getType()
 	{
 		return type;
+	}
+	
+	/**
+	 * Returns the {@link Date} object corresponding to when this
+	 * <code>Event</code> occurred.
+	 * 
+	 * @return The {@link Date} object corresponding to when this
+	 *         <code>Event</code> occurred.
+	 */
+	public Date getDate()
+	{
+		return date;
 	}
 
 	/**

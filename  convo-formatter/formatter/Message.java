@@ -2,6 +2,8 @@ package formatter;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * <code>Messages</code> are logical combinations of a sender, time stamp, and text
@@ -13,7 +15,8 @@ public class Message implements Event
 {
 	private String sender;     // The SN of the person who sent this message.
 	private Timestamp time;    // The time this Message was sent.
-	private String message;    // The actual text of the message.
+//	private String message;    // The actual text of the message.
+	private Vector<Part> parts;// The different parts of the message string.
 	private Color color;       // The font color of the text of the message.
 	private Font font;         // The font of the message.
 	private boolean auto;      // true if this was an auto-reply.
@@ -45,7 +48,9 @@ public class Message implements Event
 	{
 		this.sender = sender;
 		this.time = time;
-		this.message = message;
+//		this.message = message;
+		parts = new Vector<Part>();
+		parts.add(new Part(message, "Arial", Color.black, 12, false, false));
 		this.color = color;
 		this.font = font;
 		this.auto = auto;
@@ -68,13 +73,19 @@ public class Message implements Event
 	}
 	
 	/**
-	 * Gets the text of the message sent.
+	 * Gets the text of the message sent.  This method ignores any formatting
+	 * information stored with the string.
 	 *
-	 * @return The text of the message.
+	 * @return The text of the message, without any formatting information.
 	 */
 	public String getMessage()
 	{
-		return message; 
+		if (parts.size() == 0) return "";
+		Iterator<Part> iter = parts.iterator();
+		StringBuffer message = new StringBuffer(iter.next().message);
+		while (iter.hasNext())
+			message.append(iter.next().message);
+		return message.toString(); 
 	}
 	
 	/**
@@ -119,13 +130,88 @@ public class Message implements Event
 	}
 
 	/**
-	 * Appends the text of the {@link String} to the end of this
-	 * <code>Message</code> separated by a newline character.
+	 * Appends the text of the {@link String} to the end of this <code>Message</code>
 	 *
-	 * @param The text to append to the end of this <code>Message</code>.
+	 * @param msg The text to append to the end of this <code>Message</code>.
 	 */
 	public void append(String msg)
 	{
-		message += "\n" + msg;
+		parts.add(new Part(msg,"Arial",Color.black, 12, false, false));
+	}
+
+	/**
+	 * Appends the text of the {@link String} to the end of this <code>Message</code>
+	 *
+	 * @param msg The text to append to the end of this <code>Message</code>.
+	 * @param f The font name of this part of the message.
+	 * @param c The color of this part of the message.
+	 */	
+	public void append(String msg, String f, Color c)
+	{
+		parts.add(new Part(msg,f,c, 12, false, false));
+	}
+
+	/**
+	 * Appends the text of the {@link String} to the end of this <code>Message</code>
+	 *
+	 * @param msg The text to append to the end of this <code>Message</code>.
+	 * @param f The font name of this part of the message.
+	 * @param c The color of this part of the message.
+	 * @param s The size of the font in pts.
+	 * @param b <code>true</code> if the appended part of the message is bold,
+	 *          <code>false</code> otherwise.
+	 * @param i <code>true</code> if the appended part of the message is italicized,
+	 *          <code>false</code> otherwise.
+	 */
+	public void append(String msg, String f, Color c, int s, boolean b, boolean i)
+	{
+		parts.add(new Part(msg,f,c,s,b,i));
+	}
+	
+	/**
+	 * Puts a simple newline at the end of the current message.
+	 */
+	public void appendNewline()
+	{
+		parts.add(new Part("\n","Arial",Color.black,12,false,false));
+	}
+	
+	/**
+	 * This is a part of a message.  It allows individual parts of the message
+	 * as a whole to carry different formatting information.  For example, one
+	 * part could be bold and italicized, while another is in a different font
+	 * and a different color.
+	 */
+	private class Part
+	{
+		String message;
+		String font;
+		Color c;
+		int size;
+		boolean bold;
+		boolean italic;
+
+		/**
+		 * Creates a new part.  This should be added to the <code>parts Vector</code>
+		 * of the <code>Message</code> class.
+		 *
+		 * @param msg The text to append to the end of this <code>Message</code>.
+		 * @param f The font name of this part of the message.
+		 * @param c The color of this part of the message.
+		 * @param s The size of the font in pts.
+		 * @param b <code>true</code> if the appended part of the message is bold,
+		 *          <code>false</code> otherwise.
+		 * @param i <code>true</code> if the appended part of the message is italicized,
+		 *          <code>false</code> otherwise.
+		 */
+		public Part(String msg, String f, Color c, int s, boolean b, boolean i)
+		{
+			message = msg;
+			font = f;
+			color = c;
+			size = s;
+			bold = b;
+			italic = i;
+		}
 	}
 }
