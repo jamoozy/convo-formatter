@@ -1,10 +1,14 @@
 package reader;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+
 import java.util.Iterator;
 import java.util.Vector;
-import formatter.FontState;
 
+import formatter.FontState;
 import formatter.Session;
 
 // TODO: actually write this.
@@ -21,10 +25,33 @@ public class DeadAIMReader implements Reader
 	 */
 	public boolean loadFile(String filename) throws IOException
 	{
-		// TODO Auto-generated method stub
+		BufferedReader reader;
+
+		try
+		{
+			reader = new BufferedReader(new FileReader(filename));
+		}
+		catch (FileNotFoundException fnfe)
+		{
+			throw new FileNotFoundException("File " + filename + " does not exist!");
+		}
+
+		sessions = new Vector<Session>();
+		String next = reader.readLine();
+
+		for (int i = 1; next != null; i++)
+		{
+			_parseLine(i, next);
+			next = reader.readLine();
+		}
+
 		return false;
 	}
-	
+
+	private void _parseLine(int lineNumber, String line)
+	{
+	}
+
 	/**
 	 * Returns an <code>Iterator</code> of the <code>Session</code>s
 	 * in the last-read file.

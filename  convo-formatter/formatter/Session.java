@@ -27,11 +27,11 @@ public class Session
 	////////////////////////////////////////////////////////////////////////////
 	// --------------------------- "factory" part --------------------------- //
 	////////////////////////////////////////////////////////////////////////////
-	
+
 	private static Session session;       // Currently active session.
 
 	/**
-	 * Creates and sets active a new Session.&nbspThis method is the only way
+	 * Creates and sets active a new Session. This method is the only way
 	 * to create a new <code>Session</code> object.
 	 * 
 	 * @param mySN The name of the SN that is "me".
@@ -43,11 +43,11 @@ public class Session
 	{
 		if (session != null)
 			throw new AlreadyActiveException("Must close current Session before starting a new one.");
-			
+
 		session = new Session(mySN, yourSN, date);
 		return session;
 	}
-	
+
 	/**
 	 * Gets the most recently created <code>Session</code>.
 	 * 
@@ -57,7 +57,7 @@ public class Session
 	{
 		return session;
 	}
-	
+
 	/**
 	 * Closes the current <code>Session</code>, allowing a new one to be made.
 	 */
@@ -65,7 +65,7 @@ public class Session
 	{
 		session = null;
 	}
-	
+
 	/**
 	 * Determines if there is a <code>Session</code> already active.
 	 * 
@@ -76,9 +76,9 @@ public class Session
 	{
 		return session != null;
 	}
-	
-	
-	
+
+
+
 	////////////////////////////////////////////////////////////////////////////
 	// ---------------------------- actual class ---------------------------- //
 	////////////////////////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ public class Session
 	private String yourSN;           // The SN of the person talking with "me"
 	private Date date;               // When this Session took place.
 	private Vector<Event> events;    // The Events this Session consists of.
-	
+
 	/**
 	 * Constructs a new <code>Session</code> object with the given parameters.
 	 *
@@ -100,10 +100,10 @@ public class Session
 		this.mySN = mySN;
 		this.yourSN = yourSN;
 		this.date = date;
-		
+
 		events = new Vector<Event>();
 	}
-	
+
 	/**
 	 * Appends the contents of the {@link String} object to the end of the last
 	 * {@link Message}.  Assumes the last {@link Event} passed to {@link #add()}
@@ -116,13 +116,13 @@ public class Session
 	public void append(String msg)
 	{
 		if (msg == null || msg.trim().equals("")) return;
-		
+
 		if (events.lastElement() instanceof Message)
 			((Message)events.lastElement()).append(msg);
 		else
 			throw new IllegalArgumentException();
 	}
-	
+
 	/**
 	 * Appends the passed <code>Event</code> to the list containted in this
 	 * <code>Session</code>.  It is assumed that these <code>Event</code>s are
@@ -134,7 +134,7 @@ public class Session
 	{
 		events.add(e);
 	}
-	
+
 	/**
 	 * Returns the SN of the person that saved this log.
 	 *
@@ -144,7 +144,7 @@ public class Session
 	{
 		return mySN;
 	}
-	
+
 	/**
 	 * Returns the name of the SN talking with "me".
 	 *
@@ -154,7 +154,7 @@ public class Session
 	{
 		return yourSN;
 	}
-	
+
 	/**
 	 * Returns the <code>Date</code> this <code>Session</code> was made.
 	 *
@@ -164,7 +164,7 @@ public class Session
 	{
 		return date;
 	}
-	
+
 	/**
 	 * Sets the date to a new value.  This is needed when a conversation
 	 * starts one day, but ends another.  In this case it is desirable to
@@ -183,7 +183,7 @@ public class Session
 
 		this.date = date;
 	}
-	
+
 	/**
 	 * Returns an <code>Iterator</code> of all the <code>Events</code> stored in
 	 * this <code>Session</code>.

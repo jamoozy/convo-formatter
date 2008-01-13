@@ -33,7 +33,7 @@ public class FontState
 	// italics and underline tags have been activated or deactivated.
 	// If the number is positive, then the value is true.  When 0,
 	// the value is false.  If the number is ever negative, then an
-	// error has occured (probably because of a mal-formatted file.).
+	// error has occured (probably because of a mal-formatted file).
 	private int bold, italic, underline;
 	
 	/**
@@ -72,24 +72,46 @@ public class FontState
 		sizei = typefacei = colori = 1;
 	}
 
+	/**
+	 * Register that another <code>&lt;b&gt;</code> or
+	 * <code>&lt;em&gt;</code> tag has been seen.
+	 */
 	public void setBold() { bold++; }
 
+	/**
+	 * Register that another <code>&lt;/b&gt;</code> or
+	 * <code>&lt;/em&gt;</code>tag has been seen.
+	 */
 	public void setNotBold() { bold--; }
 
-	public boolean isBold() { return bold != 0; }
+	/** Determines if text has been set to bold. */
+	public boolean isBold() { return bold > 0; }
 
+	/** Register that another <code>&lt;i&gt;</code> tag has been seen. */
 	public void setItalicized() { italic++; }
 
+	/** Register that another <code>&lt;/i&gt;</code> tag has been seen. */
 	public void setNotItalicized() { italic--; }
 
-	public boolean isItalicized() { return italic != 0; }
+	/** Determines if text has been set to italized. */
+	public boolean isItalicized() { return italic > 0; }
 
+	/** Register that another <code>&lt;u&gt;</code> tag has been seen. */
 	public void setUnderlined() { underline++; }
 
+	/** Register that another <code>&lt;/u&gt;</code> tag has been seen. */
 	public void setNotUnderlined() { underline--; }
 
-	public boolean isUnderlined() { return underline != 0; }
+	/** Determines if text has been set to underlined. */
+	public boolean isUnderlined() { return underline > 0; }
 
+	/**
+	 * Puts another font size on the stack of font sizes.
+	 *
+	 * @param s The new font size.
+	 *
+	 * @throws RuntimeException if too man different font sizes have been pushed.
+	 */
 	public void pushFontSize(int s)
 	{
 		if (sizei == MAX_DEPTH)
@@ -98,19 +120,39 @@ public class FontState
 		size[sizei++] = s;
 	}
 
-	public void popFontSize()
+	/**
+	 * Removes the top-most font size from the stack.
+	 *
+	 * @return The popped size.
+	 *
+	 * @throws RuntimeException if the stack is empty (there are
+	 * no font sizes to pop).
+	 */
+	public int popFontSize()
 	{
 		if (sizei == 1)
-			throw new RuntimeException("Stack almost empty!");
+			throw new RuntimeException("Stack empty!");
 
-		sizei--;
+		return size[--sizei];
 	}
 
+	/**
+	 * Get the current font size.
+	 * @return The current font size.
+	 */
 	public int getFontSize()
 	{
+		// Guaranteed to have something in the 0th entry.
 		return size[sizei-1];
 	}
 
+	/**
+	 * Puts another font face on the stack of font faces.
+	 *
+	 * @param s The new font face.
+	 *
+	 * @throws RuntimeException if too man different font faces have been pushed.
+	 */
 	public void pushFontFace(String s)
 	{
 		if (sizei == MAX_DEPTH)
@@ -119,19 +161,39 @@ public class FontState
 		typeface[typefacei++] = s;
 	}
 
-	public void popFontFace()
+	/**
+	 * Removes the top-most font face from the stack.
+	 *
+	 * @return The popped font name.
+	 *
+	 * @throws RuntimeException if the stack is empty (there are
+	 * no font faces to pop).
+	 */
+	public String popFontFace()
 	{
 		if (typefacei == 1)
-			throw new RuntimeException("Stack almost empty!");
+			throw new RuntimeException("Stack empty!");
 
-		typefacei--;
+		return typeface[--typefacei];
 	}
 
+	/**
+	 * Get the current font face.
+	 * @return The name of the current font face.
+	 */
 	public String getFontFace()
 	{
+		// Guaranteed to have at least one.
 		return typeface[typefacei-1];
 	}
 	
+	/**
+	 * Puts another color on the stack of colors.
+	 *
+	 * @param s The new color.
+	 *
+	 * @throws RuntimeException if too man different colors have been pushed.
+	 */
 	public void pushColor(Color c)
 	{
 		if (sizei == MAX_DEPTH)
@@ -140,16 +202,29 @@ public class FontState
 		color[colori++] = c;
 	}
 
-	public void popColor()
+	/**
+	 * Removes the top-most color from the stack.
+	 *
+	 * @return The popped color.
+	 *
+	 * @throws RuntimeException if the stack is empty (there are
+	 * no colors to pop).
+	 */
+	public Color popColor()
 	{
 		if (colori == 1)
 			throw new RuntimeException("Stack almost empty!");
 
-		colori--;
+		return color[--colori];
 	}
 
+	/**
+	 * Get the current color.
+	 * @return The current color.
+	 */
 	public Color getColor()
 	{
+		// Guaranteed to have at least one.
 		return color[colori-1];
 	}
 }

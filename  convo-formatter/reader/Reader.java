@@ -25,7 +25,7 @@ public interface Reader
 	 * @see {@link #iterator()}
 	 */
 	public boolean loadFile(String filename) throws IOException;
-	
+
 	/**
 	 * Gets the {@link Iterator} that iterates through the stored {@link Session}s.
 	 * 

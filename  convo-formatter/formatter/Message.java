@@ -129,6 +129,12 @@ public class Message implements Event
 		return auto;
 	}
 
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// --------------------------------- Append --------------------------------- //
+	////////////////////////////////////////////////////////////////////////////////
+
 	/**
 	 * Appends the text of the {@link String} to the end of this <code>Message</code>
 	 *
@@ -175,7 +181,13 @@ public class Message implements Event
 	{
 		parts.add(new Part("\n","Arial",Color.black,12,false,false));
 	}
-	
+
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	// --------------------------- Message Parts -------------------------------- //
+	////////////////////////////////////////////////////////////////////////////////
+
 	/**
 	 * This is a part of a message.  It allows individual parts of the message
 	 * as a whole to carry different formatting information.  For example, one
