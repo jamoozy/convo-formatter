@@ -15,7 +15,7 @@ import formatter.Session;
  */
 public abstract class HTMLReader implements Reader
 {
-	/** Keeps track of what the font is doing. */
+	/** Keeps track of what state the font is in. */
 	protected FontState fs;
 
 	/**

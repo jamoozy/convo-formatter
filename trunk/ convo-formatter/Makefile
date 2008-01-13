@@ -2,9 +2,11 @@ all :
 	javac formatter/*.java reader/*.java exception/*.java writer/*.java ui/*.java reader/lexer/html/*.java
 
 doc :
+	if [ ! -d docs ]; then mkdir docs; fi
 	javadoc exception formatter reader writer reader.lexer.html -d docs
 
 t-d :
+	if [ ! -d out ]; then mkdir out; fi
 	java formatter.Main --trillian-deadaim
 
 r-d :
