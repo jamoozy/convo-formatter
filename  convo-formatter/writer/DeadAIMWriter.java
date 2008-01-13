@@ -73,8 +73,6 @@ public class DeadAIMWriter implements Writer
 	 * 
 	 * @param dir Name of the containing directory.
 	 * @param session Data to store in the file.
-	 * @return <code>true</code> if successful and the file is ready for
-	 *         writing, <code>false</code> otherwise.
 	 */
 	public void makeFile(String dir, Session session)
 	{

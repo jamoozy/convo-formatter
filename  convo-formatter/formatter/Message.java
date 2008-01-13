@@ -25,7 +25,7 @@ public class Message implements Event
 	 * Creates a new <code>Message</code>.&nbsp;Assumes black-on-white text.
 	 *
 	 * @param sender Screen name of the sender.
-	 * @param date The time the message was sent.
+	 * @param time The time the message was sent.
 	 * @param message The text of the message.
 	 * @param auto Whether this is an auto-generated message or not.
 	 */
@@ -38,7 +38,7 @@ public class Message implements Event
 	 * Creates a new <code>Message</code>.
 	 *
 	 * @param sender Screen name of the sender.
-	 * @param date The time the message was sent.
+	 * @param time The time the message was sent.
 	 * @param message The text of the message.
 	 * @param color The color of the text of the message.
 	 * @param font The font the message should be in.

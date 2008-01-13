@@ -106,7 +106,7 @@ public class Session
 
 	/**
 	 * Appends the contents of the {@link String} object to the end of the last
-	 * {@link Message}.  Assumes the last {@link Event} passed to {@link #add()}
+	 * {@link Message}.  Assumes the last {@link Event} passed to {@link #add(Event)}
 	 * was of type {@link Message}.  If the last <code>Event</code> was not of
 	 * type <code>Message</code> then an exception is thrown.
 	 *
