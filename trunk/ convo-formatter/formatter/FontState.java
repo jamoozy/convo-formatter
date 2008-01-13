@@ -190,7 +190,7 @@ public class FontState
 	/**
 	 * Puts another color on the stack of colors.
 	 *
-	 * @param s The new color.
+	 * @param c The new color.
 	 *
 	 * @throws RuntimeException if too man different colors have been pushed.
 	 */

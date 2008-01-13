@@ -4,6 +4,7 @@ package reader;
 import java.io.IOException;
 import java.util.Iterator;
 
+import formatter.FontState;
 import formatter.Session;
 
 /**
@@ -14,12 +15,26 @@ import formatter.Session;
  */
 public abstract class HTMLReader implements Reader
 {
+	/** Keeps track of what the font is doing. */
+	protected FontState fs;
+
+	/**
+	 * Creates a new <code>FontState</code> object.
+	 */
+	public HTMLReader()
+	{
+		fs = new FontState();
+	}
+
 	protected Object[] _extractTag(String line)
 	{
 		return null;
 	}
 
-	protected class Tag
+	/**
+	 * A single tag is represented with this enum.
+	 */
+	protected enum Tag
 	{
 	}
 }

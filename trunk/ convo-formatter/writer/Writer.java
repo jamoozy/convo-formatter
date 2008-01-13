@@ -16,7 +16,6 @@ public interface Writer
 	 * 
 	 * @param dir The parent directory of the file to be created.
 	 * @param session The {@link Session} object to create a new log from.
-	 * @return <code>true</code> if successful, <code>false</code> otherwise.
 	 */
 	public void makeFile(String dir, Session session);
 }

@@ -12,7 +12,7 @@ import formatter.FontState;
 import formatter.Session;
 
 // TODO: actually write this.
-public class DeadAIMReader implements Reader
+public class DeadAIMReader extends HTMLReader
 {
 	private Vector<Session> sessions;  // The Sessions stored in this log file.
 	private FontState fs;              // keeps track of how the HTML tags have effected text.
@@ -48,7 +48,7 @@ public class DeadAIMReader implements Reader
 		return false;
 	}
 
-	private void _parseLine(int lineNumber, String line)
+	private void _parseLine(int lineNumber, String text)
 	{
 	}
 

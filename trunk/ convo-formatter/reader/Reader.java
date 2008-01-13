@@ -14,15 +14,15 @@ import formatter.Session;
 public interface Reader
 {
 	/**
-	 * Loads a file into this class.  Once loaded you can get an {@link Iterator}
-	 * of (@link Session}s with the {@link #iterator()} method.
+	 * Loads a file into this class. Once loaded you can get an {@link Iterator}
+	 * of {@link Session}s with the {@link #iterator()} method.
 	 * 
 	 * @param filename The file to load from.
 	 * @return <code>true</code> if successful, <code>false</code> otherwise.
 	 * 
 	 * @throws IOException When an I/O error occurs.
 	 * 
-	 * @see {@link #iterator()}
+	 * @see #iterator()
 	 */
 	public boolean loadFile(String filename) throws IOException;
 
