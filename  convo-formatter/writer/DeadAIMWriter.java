@@ -8,10 +8,10 @@ import java.util.Iterator;
 import java.awt.Color;
 import java.awt.Font;
 
+import reader.NoFileException;
+
 //import javax.swing.JOptionPane;
 
-import exception.ExistingFileException;
-import exception.NoFileException;
 import formatter.Date;
 import formatter.Event;
 import formatter.Message;

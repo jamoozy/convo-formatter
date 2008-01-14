@@ -1,4 +1,4 @@
-package exception;
+package reader;
 
 public class NoFileException extends RuntimeException
 {

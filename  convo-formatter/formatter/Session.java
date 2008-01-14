@@ -3,7 +3,6 @@ package formatter;
 import java.util.Iterator;
 import java.util.Vector;
 
-import exception.AlreadyActiveException;
 
 /**
  * This is one chat.  This is the representation of chat {@link Notification}s and {@link Message}s
