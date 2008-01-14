@@ -14,8 +14,8 @@ import java.awt.Color;
 public class FontState
 {
 	/**
-	 * Maximum number of consecutive <code>set</code>s this object can
-	 * keep track of before overflowing.
+	 * Maximum number of consecutive calls to <code>set</code> methods
+	 * this object can keep track of before overflowing. Currently 10.
 	 */
 	public static int MAX_DEPTH = 10;
 
@@ -25,9 +25,9 @@ public class FontState
 	private String typeface[];
 	private Color color[];
 
-	// These keep track of how far in each stack we are by pointing
-	// to the element one past the top-most element.
-	private int sizei, typefacei, colori;
+	// This keeps track of how far in each of the above stacks we are
+	// by pointing to the element one past the top-most element.
+	private int fonti;
 	
 	// These are meant to keep track of the number of times bold,
 	// italics and underline tags have been activated or deactivated.
@@ -49,7 +49,7 @@ public class FontState
 		color[0] = Color.black;
 
 		bold = italic = underline = 0;
-		sizei = typefacei = colori = 1;
+		fonti = 1;
 	}
 	
 	/**
@@ -69,7 +69,7 @@ public class FontState
 		color[0] = defaultColor;
 
 		bold = italic = underline = 0;
-		sizei = typefacei = colori = 1;
+		fonti = 1;
 	}
 
 	/**
@@ -106,34 +106,36 @@ public class FontState
 	public boolean isUnderlined() { return underline > 0; }
 
 	/**
-	 * Puts another font size on the stack of font sizes.
+	 * Puts another font on the stack of fonts.
 	 *
-	 * @param s The new font size.
+	 * @param s The new font size. <code>-1</code> means "use last"
+	 * @param f The new font face. <code>null</code> means "use last"
+	 * @param c The new font color. <code>null</code> means "use last"
 	 *
-	 * @throws RuntimeException if too man different font sizes have been pushed.
+	 * @throws RuntimeException if too man different font changes have been pushed.
 	 */
-	public void pushFontSize(int s)
+	public void pushFont(int s, String f, Color c)
 	{
-		if (sizei == MAX_DEPTH)
+		if (fonti == MAX_DEPTH)
 			throw new RuntimeException("Stack full");
 
-		size[sizei++] = s;
+		size[fonti] = s;
+		typeface[fonti] = f;
+		color[fonti++] = c;
 	}
 
 	/**
-	 * Removes the top-most font size from the stack.
-	 *
-	 * @return The popped size.
+	 * Removes the top-most font from the stack.
 	 *
 	 * @throws RuntimeException if the stack is empty (there are
 	 * no font sizes to pop).
 	 */
-	public int popFontSize()
+	public void popFont()
 	{
-		if (sizei == 1)
+		if (fonti == 1)
 			throw new RuntimeException("Stack empty!");
 
-		return size[--sizei];
+		fonti--;
 	}
 
 	/**
@@ -143,38 +145,7 @@ public class FontState
 	public int getFontSize()
 	{
 		// Guaranteed to have something in the 0th entry.
-		return size[sizei-1];
-	}
-
-	/**
-	 * Puts another font face on the stack of font faces.
-	 *
-	 * @param s The new font face.
-	 *
-	 * @throws RuntimeException if too man different font faces have been pushed.
-	 */
-	public void pushFontFace(String s)
-	{
-		if (sizei == MAX_DEPTH)
-			throw new RuntimeException("Stack full");
-
-		typeface[typefacei++] = s;
-	}
-
-	/**
-	 * Removes the top-most font face from the stack.
-	 *
-	 * @return The popped font name.
-	 *
-	 * @throws RuntimeException if the stack is empty (there are
-	 * no font faces to pop).
-	 */
-	public String popFontFace()
-	{
-		if (typefacei == 1)
-			throw new RuntimeException("Stack empty!");
-
-		return typeface[--typefacei];
+		return size[fonti-1];
 	}
 
 	/**
@@ -184,47 +155,16 @@ public class FontState
 	public String getFontFace()
 	{
 		// Guaranteed to have at least one.
-		return typeface[typefacei-1];
+		return typeface[fonti-1];
 	}
 	
-	/**
-	 * Puts another color on the stack of colors.
-	 *
-	 * @param c The new color.
-	 *
-	 * @throws RuntimeException if too man different colors have been pushed.
-	 */
-	public void pushColor(Color c)
-	{
-		if (sizei == MAX_DEPTH)
-			throw new RuntimeException("Stack full");
-
-		color[colori++] = c;
-	}
-
-	/**
-	 * Removes the top-most color from the stack.
-	 *
-	 * @return The popped color.
-	 *
-	 * @throws RuntimeException if the stack is empty (there are
-	 * no colors to pop).
-	 */
-	public Color popColor()
-	{
-		if (colori == 1)
-			throw new RuntimeException("Stack almost empty!");
-
-		return color[--colori];
-	}
-
 	/**
 	 * Get the current color.
 	 * @return The current color.
 	 */
-	public Color getColor()
+	public Color getFontColor()
 	{
 		// Guaranteed to have at least one.
-		return color[colori-1];
+		return color[fonti-1];
 	}
 }
