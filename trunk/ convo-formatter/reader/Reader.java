@@ -15,7 +15,7 @@ public interface Reader
 {
 	/**
 	 * Loads a file into this class. Once loaded you can get an {@link Iterator}
-	 * of {@link Session}s with the {@link #iterator()} method.
+	 * of {@link Session} objects with the {@link #iterator()} method.
 	 * 
 	 * @param filename The file to load from.
 	 * @return <code>true</code> if successful, <code>false</code> otherwise.
@@ -27,9 +27,11 @@ public interface Reader
 	public boolean loadFile(String filename) throws IOException;
 
 	/**
-	 * Gets the {@link Iterator} that iterates through the stored {@link Session}s.
+	 * Gets the {@link Iterator} that iterates through the stored {@link
+	 * Session} objects.
 	 * 
-	 * @return An {@link Iterator} of {@link Session}s that were stored in the file.
+	 * @return An {@link Iterator} of {@link Session} objects that were
+	 * stored in the file.
 	 */
 	public Iterator<Session> iterator();
 }
