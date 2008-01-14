@@ -1,4 +1,4 @@
-package exception;
+package formatter;
 
 public class AlreadyActiveException extends RuntimeException
 {

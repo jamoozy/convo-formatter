@@ -4,8 +4,7 @@ import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import exception.FileFormatException;
-
+import reader.FileFormatException;
 import reader.lexer.html.Lexeme.Type;
 
 

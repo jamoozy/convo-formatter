@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.Iterator;
 
-import exception.FileFormatException;
 import formatter.FontState;
 import formatter.Session;
 
