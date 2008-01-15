@@ -43,6 +43,7 @@ public class FontState
 	{
 		size = new int[MAX_DEPTH];
 		typeface = new String[MAX_DEPTH];
+		color = new Color[MAX_DEPTH];
 
 		size[0] = 12;
 		typeface[0] = "arial";
