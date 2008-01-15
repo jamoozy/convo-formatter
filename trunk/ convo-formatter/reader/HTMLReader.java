@@ -97,6 +97,60 @@ public abstract class HTMLReader implements Reader
 	////////////////////////////////////////////////////////////////////////////////
 
 	/**
+	 * Eats the passed tag from the passed line. The <code>tag</code> must be the
+	 * first thing to occur at the beginning of <code>line</code> (not including
+	 * whitespace) otherwise the method will return <code>null</code>.
+	 * 
+	 * @param line The line to eat away at.
+	 * @param tag The tag to be eaten.
+	 * 
+	 * @return The line without the tag or <code>null</code> if the line did not
+	 * start with the tag and <code>errmsg</code> was <code>null</code>.
+	 * @throws FileFormatException If <code>errmsg</code> is not <code>null</code>
+	 * and the line did not start with the tag.
+	 */
+	protected String eat(String line, String tag, String errmsg) throws FileFormatException
+	{
+		line = line.trim();
+		if (line.substring(0,tag.length()).toLowerCase().equals(tag.toLowerCase()))
+			return line.substring(tag.length());
+
+		if (errmsg == null)
+			return null;
+		else
+			throw new FileFormatException(errmsg);
+	}
+	
+	protected String eatBodyTag(String line) throws FileFormatException
+	{
+		line = line.trim().toLowerCase();
+		if (line.substring(0,5).equals("<body"))
+		{
+			if (line.charAt(5) == '>')
+				return line.substring(6);
+
+			for (int i = 5; i < line.length(); i++)
+			{
+				if (line.charAt(i) == ' ' || line.charAt(i) == '\t' ||
+						line.charAt(i) == '\r' || line.charAt(i) == '\n')
+				{
+					continue;
+				}
+				else if (line.charAt(i) >= 'a' && line.charAt(i) <= 'z')
+				{
+					// TODO write this.
+				}
+				else
+				{
+					throw _makeFFE("Unrecognized property", line, i);
+				}
+			}
+		}
+
+		throw new FileFormatException("Malformatted file.");
+	}
+	
+	/**
 	 * Parse a <code>&lt;b%gt;</code> or <code>&lt;/b%gt;</code> tag.
 	 *
 	 * @param line <code>String</code> of the line to get the tag from.

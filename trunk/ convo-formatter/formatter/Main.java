@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 
+import reader.DeadAIMReader;
 import reader.TrillianReader;
 import ui.GUI;
 import writer.DeadAIMWriter;
@@ -55,7 +56,15 @@ public class Main
 			return;
 		}
 
-		System.err.println("DeadAIM log testing is not yet functional!");
+		DeadAIMReader reader = new DeadAIMReader();
+		try
+		{
+			reader.loadFile(args[1]);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
