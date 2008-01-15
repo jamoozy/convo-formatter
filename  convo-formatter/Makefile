@@ -1,19 +1,19 @@
 all :
-	javac formatter/*.java reader/*.java exception/*.java writer/*.java ui/*.java reader/lexer/html/*.java
+	javac formatter/*.java reader/*.java writer/*.java ui/*.java reader/lexer/html/*.java
 
 doc :
-	if [ ! -d docs ]; then mkdir docs; fi
-	javadoc exception formatter reader writer reader.lexer.html -d docs
+	if [ ! -d doc ]; then mkdir doc; fi
+	javadoc ui formatter reader writer reader.lexer.html -d doc
 
 t-d :
 	if [ ! -d out ]; then mkdir out; fi
-	java formatter.Main --trillian-deadaim
+	java formatter.Main --trillian-deadaim in/Trillian\ example.txt out/
 
 r-d :
-	java formatter.Main --read-deadaim
+	java formatter.Main --read-deadaim in/2005-08-12\ \[Friday\].htm
 
 clean :
-	rm formatter/*.class reader/*.class exception/*.class writer/*.class ui/*.class reader/lexer/html/*.class
+	rm formatter/*.class reader/*.class writer/*.class ui/*.class reader/lexer/html/*.class
 
 wc :
-	wc -l exception/*.java formatter/*.java reader/*.java reader/lexer/html/*.java ui/*.java writer/*.java
+	wc -l formatter/*.java reader/*.java reader/lexer/html/*.java ui/*.java writer/*.java
