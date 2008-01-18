@@ -65,6 +65,9 @@ public abstract class HTMLReader implements Reader
 	/**
 	 * This must be called at the top of the child class's <code>loadFile(String)</code>
 	 * method.
+	 *
+	 * @param filename The name of the file to open and read from.
+	 *
 	 * @see Reader.loadFile(String)
 	 */
 	public boolean loadFile(String filename) throws IOException
@@ -84,8 +87,8 @@ public abstract class HTMLReader implements Reader
 	}
 
 	/**
-	 * Gets the next line of the file. This updates the {@link line} and
-	 * {@link lineNumber} members.
+	 * Gets the next line of the file. This updates the {@link #line} and
+	 * {@link #lineNumber} members.
 	 * 
 	 * @throws IOException if an I/O error occurs.
 	 */
@@ -191,18 +194,15 @@ public abstract class HTMLReader implements Reader
 	/**
 	 * Eats the body tag and parses the parameters it contains.
 	 *
-	 * @param line
-	 * @return
-	 *
 	 * @throws FileFormatException If the <code>&lt;body&gt;</code> tag is
 	 * formatted in an unexpected way.
 	 */
-	protected String eatBodyTag() throws FileFormatException
+	protected void eatBodyTag() throws FileFormatException
 	{
 		if (line.substring(0,5).equals("<body"))
 		{
 			if (line.charAt(5) == '>')
-				return line.substring(6);
+				line = line.substring(6);
 
 			for (int i = 5; i < line.length(); i++)
 			{
