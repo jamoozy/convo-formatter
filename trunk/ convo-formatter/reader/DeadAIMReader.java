@@ -6,18 +6,13 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import java.util.Iterator;
-import java.util.Vector;
 
 import formatter.Date;
-import formatter.FontState;
 import formatter.Session;
 
 // TODO: actually write this.
 public class DeadAIMReader extends HTMLReader
 {
-	private Vector<Session> sessions;  // The Sessions stored in this log file.
-	private FontState fs;              // keeps track of how the HTML tags have effected text.
-
 	/**
 	 * Loads the {@link Session}s of this file into this class.
 	 * 
@@ -26,18 +21,7 @@ public class DeadAIMReader extends HTMLReader
 	 */
 	public boolean loadFile(String filename) throws IOException
 	{
-		BufferedReader reader;
-
-		try
-		{
-			reader = new BufferedReader(new FileReader(filename));
-		}
-		catch (FileNotFoundException fnfe)
-		{
-			throw new FileNotFoundException("File " + filename + " does not exist!");
-		}
-
-		sessions = new Vector<Session>();
+		super.loadFile(filename);
 
 		// Determine the date from the name of the file.
 		int start1 = filename.lastIndexOf('/');
@@ -50,33 +34,25 @@ public class DeadAIMReader extends HTMLReader
 		System.out.println("Determined Date:"+date.toString());
 
 		// Eat up some of the header stuff.
-		int lineNumber = 1;
-		String line = reader.readLine();
-		line = eat(line, "<html>", "No <html> tag found.");
-		while (line.trim().equals("")) { line = reader.readLine(); lineNumber++; }
-		line = eat(line, "<head>", "No <head> tag found.");
-		while (line.trim().equals("")) { line = reader.readLine(); lineNumber++; }
-		line = eat(line, "<title>", "No <head> tag found.");
-		while (line.trim().equals("")) { line = reader.readLine(); lineNumber++; }
+		eat("<html>", "No <html> tag found.");
+		eat("<head>", "No <head> tag found.");
+		eat("<title>", "No <head> tag found.");
 		
 		// Find out who I'm speaking with -- it's the 3rd word in the sequence:
 		// Talk with [sn] on [date]
-		line = eat(line, "Talk", "\"Talk\" expected.");
-		while (line.trim().equals("")) { line = reader.readLine(); lineNumber++; }
-		line = eat(line, "with", "\"with\" expected.");
-		while (line.trim().equals("")) { line = reader.readLine(); lineNumber++; }
-		String yourSN = line.trim().substring(0, line.trim().indexOf(' '));
+		eat("Talk", "\"Talk\" expected.");
+		eat("with", "\"with\" expected.");
+		String yourSN = line.substring(0, line.indexOf(' '));
 		System.out.println("Determined yourSN:"+yourSN);
-		line = eat(line, yourSN, "Could not read SN correctly on line "+lineNumber);
-		while (line.trim().equals("")) { line = reader.readLine(); lineNumber++; }
-		line = eat(line, "on", "\"on\" expectd.");
-		while (line.trim().equals("")) { line = reader.readLine(); lineNumber++; }
-		line = eat(line, date.toString(), "Could not read date correctly:"+lineNumber);
-		while (line.trim().equals("")) { line = reader.readLine(); lineNumber++; }
-		
+		eat(yourSN, "Could not read SN correctly on line "+lineNumber);
+		eat("on", "\"on\" expectd.");
+		eat(date.toString(), "Could not read date correctly:"+lineNumber);
+		eat("</title>", "</title> tag expected");
+		eat("</head>", "</head> tag expected");
+
 		// Get the background color (we ignore it for now)
 		// FIXME: The bg color is being ignored ... this cannot stand!
-		eatBodyTag(line);
+		eatBodyTag();
 
 		//Session.makeSession(mySN, yourSN, date);
 
