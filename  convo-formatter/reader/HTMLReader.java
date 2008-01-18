@@ -2,8 +2,12 @@
 package reader;
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Vector;
 
 import formatter.FontState;
 import formatter.Session;
@@ -25,11 +29,74 @@ public abstract class HTMLReader implements Reader
 	protected FontState fs;
 
 	/**
+	 * The Sessions stored in this log file.
+	 */
+	protected Vector<Session> sessions;
+
+	/**
+	 * The link to the file passed to {@link #loadFile(String)}. Should only
+	 * be read in {@link #loadFile(String)}.  Will be null elsewhere.
+	 */
+	protected BufferedReader reader;
+	
+	/**
+	 * The next line of input of input from the file passed to {@link #loadFile(String)}.
+	 * Should only be referenced in {@link #loadFile(String)}.
+	 */
+	protected String line;
+	
+	/**
+	 * The line number that {@link #line} represents in the file.
+	 */
+	protected int lineNumber;
+
+	/**
 	 * Creates a new <code>FontState</code> object.
 	 */
-	public HTMLReader()
+	protected HTMLReader()
 	{
 		fs = new FontState();
+		sessions = new Vector<Session>();
+		reader = null;
+		line = null;
+		lineNumber = 0;
+	}
+
+	/**
+	 * This must be called at the top of the child class's <code>loadFile(String)</code>
+	 * method.
+	 * @see Reader.loadFile(String)
+	 */
+	public boolean loadFile(String filename) throws IOException
+	{
+		try
+		{
+			reader = new BufferedReader(new FileReader(filename));
+		}
+		catch (FileNotFoundException fnfe)
+		{
+			throw new FileNotFoundException("File " + filename + " does not exist!");
+		}
+
+		getNextLine();
+
+		return true;
+	}
+
+	/**
+	 * Gets the next line of the file. This updates the {@link line} and
+	 * {@link lineNumber} members.
+	 * 
+	 * @throws IOException if an I/O error occurs.
+	 */
+	protected void getNextLine() throws IOException
+	{
+		do
+		{
+			line = reader.readLine().trim();
+			lineNumber++;
+		}
+		while (line != null && line.equals(""));
 	}
 
 	/**
@@ -38,7 +105,7 @@ public abstract class HTMLReader implements Reader
 	 * the string. Recognized tags currently include:
 	 * <ul>
 	 * <li> <code>&lt;b&gt;</code> for bold text.
-	 * <li> <code>&lt;em&gt;</code> for emphasised text.
+	 * <li> <code>&lt;em&gt;</code> for emphasized text.
 	 * <li> <code>&lt;i&gt;</code> for italicized text.
 	 * <li> <code>&lt;u&gt;</code> for underlined text.
 	 * <li> <code>&lt;font&gt;</code> for font size, color, and face.
@@ -97,33 +164,41 @@ public abstract class HTMLReader implements Reader
 	////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Eats the passed tag from the passed line. The <code>tag</code> must be the
-	 * first thing to occur at the beginning of <code>line</code> (not including
+	 * Eats the passed tag from {@link #line}. The <code>tag</code> must be the
+	 * first thing to occur at the beginning of {@link #line} (not including
 	 * whitespace) otherwise the method will return <code>null</code>.
 	 * 
-	 * @param line The line to eat away at.
 	 * @param tag The tag to be eaten.
+	 * @param errmsg The error message to put in the FileFormatException if it
+	 * needs to be thrown.
 	 * 
-	 * @return The line without the tag or <code>null</code> if the line did not
-	 * start with the tag and <code>errmsg</code> was <code>null</code>.
+	 * @throws IOException if an I/O error occurs.
 	 * @throws FileFormatException If <code>errmsg</code> is not <code>null</code>
 	 * and the line did not start with the tag.
 	 */
-	protected String eat(String line, String tag, String errmsg) throws FileFormatException
+	protected void eat(String tag, String errmsg) throws IOException, FileFormatException
 	{
-		line = line.trim();
 		if (line.substring(0,tag.length()).toLowerCase().equals(tag.toLowerCase()))
-			return line.substring(tag.length());
-
-		if (errmsg == null)
-			return null;
+			line = line.substring(tag.length()).trim();
+		else if (errmsg == null)
+			line = null;
 		else
 			throw new FileFormatException(errmsg);
+		if (line.equals(""))
+			getNextLine();
 	}
-	
-	protected String eatBodyTag(String line) throws FileFormatException
+
+	/**
+	 * Eats the body tag and parses the parameters it contains.
+	 *
+	 * @param line
+	 * @return
+	 *
+	 * @throws FileFormatException If the <code>&lt;body&gt;</code> tag is
+	 * formatted in an unexpected way.
+	 */
+	protected String eatBodyTag() throws FileFormatException
 	{
-		line = line.trim().toLowerCase();
 		if (line.substring(0,5).equals("<body"))
 		{
 			if (line.charAt(5) == '>')
@@ -131,12 +206,11 @@ public abstract class HTMLReader implements Reader
 
 			for (int i = 5; i < line.length(); i++)
 			{
-				if (line.charAt(i) == ' ' || line.charAt(i) == '\t' ||
-						line.charAt(i) == '\r' || line.charAt(i) == '\n')
+				if (Character.isWhitespace(line.charAt(i)))
 				{
 					continue;
 				}
-				else if (line.charAt(i) >= 'a' && line.charAt(i) <= 'z')
+				else if (Character.isLetter(line.charAt(i)))
 				{
 					// TODO write this.
 				}
@@ -147,7 +221,7 @@ public abstract class HTMLReader implements Reader
 			}
 		}
 
-		throw new FileFormatException("Malformatted file.");
+		throw _makeFFE("Malformatted file.", line, 0);
 	}
 	
 	/**
@@ -309,22 +383,20 @@ public abstract class HTMLReader implements Reader
 				int i = 6;
 				for (; i < line.length(); i++)
 				{
-					if (line.charAt(i) == ' ' || line.charAt(i) == '\n' ||
-							line.charAt(i) == '\r' || line.charAt(i) == '\t')
+					if (Character.isWhitespace(line.charAt(i)))
 					{
 						// Ignore whitespace.
 						continue;
 					}
-					else if ('a' <= line.charAt(i) && line.charAt(i) <= 'z')
+					else if (Character.isLetter(line.charAt(i)))
 					{
-						if (line.substring(i,i+4).equals("size"))
+						if (line.substring(i,i+4).toLowerCase().equals("size"))
 						{
 							if (s != -1)
 								throw _makeFFE("Multiple font size definitions:",line,i+4);
 
 							int start = i+4;
-							while (line.charAt(start) == ' ' || line.charAt(start) == '\n' ||
-									line.charAt(start) == '\r' || line.charAt(start) == '\t' ||
+							while (Character.isWhitespace(line.charAt(start)) ||
 									line.charAt(start) == '=') start++;
 							if (line.charAt(start) == '\"')
 							{
@@ -348,15 +420,14 @@ public abstract class HTMLReader implements Reader
 								throw _makeFFE("Multiple font face definitions:",line,i+4);
 
 							int start = i+4;
-							while (line.charAt(start) == ' ' || line.charAt(start) == '\n' ||
-									line.charAt(start) == '\r' || line.charAt(start) == '\t' ||
+							while (Character.isWhitespace(line.charAt(start)) ||
 									line.charAt(start) == '=') start++;
 							if (line.charAt(start) != '\"')
 								throw _makeFFE("Missing quote:",line,start);
 
 							int end = start+1;
 							while (line.charAt(end) == ' ' || line.charAt(end) == '\t' ||
-									(line.charAt(end) >= 'a' && line.charAt(end) <= 'z')) end++;
+									Character.isWhitespace(line.charAt(end))) end++;
 							if (line.charAt(end) != '\"')
 								throw _makeFFE("Missing quote:",line,end);
 
@@ -370,15 +441,14 @@ public abstract class HTMLReader implements Reader
 								throw _makeFFE("Multiple font color definitions:",line,i+5);
 
 							int start = i+5;
-							while (line.charAt(start) == ' ' || line.charAt(start) == '\n' ||
-									line.charAt(start) == '\r' || line.charAt(start) == '\t' ||
+							while (Character.isWhitespace(line.charAt(start)) ||
 									line.charAt(start) == '=') start++;
 							if (line.charAt(start) != '\"')
 								throw _makeFFE("Missing quote:",line,start);
 
 							int end = start+1;
 							while (line.charAt(end) == ' ' || line.charAt(end) == '\t' ||
-									(line.charAt(end) >= 'a' && line.charAt(end) <= 'z')) end++;
+									Character.isWhitespace(line.charAt(end))) end++;
 							if (line.charAt(end) != '\"')
 								throw _makeFFE("Missing quote:",line,end);
 

@@ -27,10 +27,10 @@ public class GUI implements Runnable
 	public void run()
 	{
 		// Make sure we have nice window decorations.
-		JFrame.setDefaultLookAndFeelDecorated(true);
+		JFrame.setDefaultLookAndFeelDecorated(false);
 
 		// Create and set up the window.
-		JFrame frame = new JFrame("Bless your mother.");
+		JFrame frame = new JFrame("Conversation formatter");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JLabel label = new JLabel("Here's a label.");
@@ -47,8 +47,8 @@ public class GUI implements Runnable
 		label.setLabelFor(button);
 
 		JPanel pane = new JPanel(new GridLayout(0, 1));
-		pane.add(button);
 		pane.add(label);
+		pane.add(button);
 		pane.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
 
 		frame.getContentPane().add(pane, BorderLayout.CENTER);
