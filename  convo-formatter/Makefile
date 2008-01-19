@@ -1,7 +1,7 @@
 all :
 	javac formatter/*.java reader/*.java writer/*.java ui/*.java reader/lexer/html/*.java
 
-doc :
+doc : FORCE
 	if [ ! -d doc ]; then mkdir doc; fi
 	javadoc ui formatter reader writer reader.lexer.html -d doc
 
@@ -17,3 +17,5 @@ clean :
 
 wc :
 	wc -l formatter/*.java reader/*.java reader/lexer/html/*.java ui/*.java writer/*.java
+
+FORCE :
