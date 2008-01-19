@@ -50,9 +50,9 @@ public class DeadAIMReader extends HTMLReader
 		eat("</title>", "</title> tag expected");
 		eat("</head>", "</head> tag expected");
 
-		// Get the background color (we ignore it for now)
-		// FIXME: The bg color is being ignored ... this cannot stand!
+		// Get the background color
 		eatBodyTag();
+		System.out.println("Got bgcolor=" + fs.getBGColor());
 
 		//Session.makeSession(mySN, yourSN, date);
 
@@ -61,6 +61,9 @@ public class DeadAIMReader extends HTMLReader
 //			_parseLine(i, next);
 //			next = reader.readLine();
 //		}
+
+		eat("</body>", "</body> expected.");
+		eat("</html>", "</html> expected.");
 
 		return false;
 	}

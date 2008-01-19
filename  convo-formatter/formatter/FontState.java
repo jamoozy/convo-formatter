@@ -25,9 +25,15 @@ public class FontState
 	private String typeface[];
 	private Color color[];
 
+	// This "stack" keeps track of background color.
+	private Color bgcolor[];
+
 	// This keeps track of how far in each of the above stacks we are
 	// by pointing to the element one past the top-most element.
 	private int fonti;
+
+	// This is the bgcolor stack pointer.
+	private int bgi;
 	
 	// These are meant to keep track of the number of times bold,
 	// italics and underline tags have been activated or deactivated.
@@ -44,13 +50,15 @@ public class FontState
 		size = new int[MAX_DEPTH];
 		typeface = new String[MAX_DEPTH];
 		color = new Color[MAX_DEPTH];
+		bgcolor = new Color[MAX_DEPTH];
+
+		bold = italic = underline = 0;
+		fonti = bgi = 1;
 
 		size[0] = 12;
 		typeface[0] = "arial";
 		color[0] = Color.black;
-
-		bold = italic = underline = 0;
-		fonti = 1;
+		bgcolor[0] = Color.white;
 	}
 	
 	/**
@@ -140,6 +148,34 @@ public class FontState
 	}
 
 	/**
+	 * Puts another background color on the stack.
+	 *
+	 * @param c The color to add to the stack.
+	 *
+	 * @throws RuntimeException if the stack gets full.
+	 */
+	public void pushBGColor(Color c)
+	{
+		if (fonti == MAX_DEPTH)
+			throw new RuntimeException("Stack full");
+
+		bgcolor[bgi++] = c;
+	}
+
+	/**
+	 * Removes the top-most background color from the stack.
+	 *
+	 * @throws RuntimeException if the stack is empty.
+	 */
+	public void popBGColor()
+	{
+		if (fonti == 1)
+			throw new RuntimeException("Stack empty!");
+
+		bgi--;
+	}
+
+	/**
 	 * Get the current font size.
 	 * @return The current font size.
 	 */
@@ -160,12 +196,21 @@ public class FontState
 	}
 	
 	/**
-	 * Get the current color.
-	 * @return The current color.
+	 * Get the current font color.
+	 * @return The current font color.
 	 */
 	public Color getFontColor()
 	{
 		// Guaranteed to have at least one.
 		return color[fonti-1];
+	}
+
+	/**
+	 * Get the current background color.
+	 * @return the current background color.
+	 */
+	public Color getBGColor()
+	{
+		return bgcolor[bgi-1];
 	}
 }
