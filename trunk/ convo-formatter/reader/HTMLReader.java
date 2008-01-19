@@ -186,7 +186,7 @@ public abstract class HTMLReader implements Reader
 		else if (errmsg == null)
 			line = null;
 		else
-			throw new FileFormatException(errmsg);
+			throw new FileFormatException("line " + lineNumber + ": " + errmsg);
 		if (line.equals(""))
 			getNextLine();
 	}
@@ -194,10 +194,11 @@ public abstract class HTMLReader implements Reader
 	/**
 	 * Eats the body tag and parses the parameters it contains.
 	 *
+	 * @throws IOException If an I/O error occurs.
 	 * @throws FileFormatException If the <code>&lt;body&gt;</code> tag is
 	 * formatted in an unexpected way.
 	 */
-	protected void eatBodyTag() throws FileFormatException
+	protected void eatBodyTag() throws IOException, FileFormatException
 	{
 		if (line.substring(0,5).equals("<body"))
 		{
@@ -208,15 +209,87 @@ public abstract class HTMLReader implements Reader
 			{
 				if (Character.isWhitespace(line.charAt(i)))
 				{
+					// Ignore white space.
 					continue;
 				}
 				else if (Character.isLetter(line.charAt(i)))
 				{
-					// TODO write this.
+					// "bgcolor" is a recognized property.
+					if (line.substring(i,i+7).toLowerCase().equals("bgcolor"))
+					{
+						// Find the equals (=) sign.
+						i += 7;
+						while (line.charAt(i) == ' ' || line.charAt(i) == '\t') i++;
+						if (line.charAt(i++) != '=')
+							throw _makeFFE("Excpected \"=\":", line, i);
+						while (line.charAt(i) == ' ' || line.charAt(i) == '\t') i++;
+
+						// Make sure it has a quote.
+						if (line.charAt(i) != '"')
+							throw _makeFFE("\" expected:", line, i);
+
+						// Check if it's numeric representation.
+						if (line.charAt(i+1) == '#')
+						{
+							if (line.charAt(i+8) != '"')
+								throw _makeFFE("Unterminated string.", line, i);
+
+							String RRGGBB = line.substring(i+2, i+8);
+							int rgb = Integer.parseInt(RRGGBB, 16);
+							fs.pushBGColor(new Color(rgb));
+
+							i += 8;
+						}
+						// Otherwise it better be a recognized string.
+						else
+						{
+							// Find the 2nd quote.
+							int start = i+1;
+							int end = i+1;
+							while (line.charAt(end) != '"') end++;
+
+							// List of all the strings we recognize as colors.
+							String color = line.substring(start, end).trim();
+							if (color.equals("black"))
+								fs.pushBGColor(Color.black);
+							else if (color.equals("blue"))
+								fs.pushBGColor(Color.blue);
+							else if (color.equals("red"))
+								fs.pushBGColor(Color.red);
+							else if (color.equals("green"))
+								fs.pushBGColor(Color.green);
+							else if (color.equals("yellow"))
+								fs.pushBGColor(Color.yellow);
+							else if (color.equals("orange"))
+								fs.pushBGColor(Color.orange);
+							else if (color.equals("gray"))
+								fs.pushBGColor(Color.gray);
+							else if (color.equals("cyan"))
+								fs.pushBGColor(Color.cyan);
+							else if (color.equals("white"))
+								fs.pushBGColor(Color.white);
+							else
+								throw _makeFFE("Unrecognized color:", line, i+2);
+
+							// update i.
+							i = end+1;
+						}
+					}
+					else
+					{
+						throw _makeFFE("Unrecognized property:", line, i);
+					}
+				}
+				else if (line.charAt(i) == '>')
+				{
+					line = line.substring(i+1).trim();
+					if (line.equals(""))
+						getNextLine();
+					return;
 				}
 				else
 				{
-					throw _makeFFE("Unrecognized property", line, i);
+					throw _makeFFE("Unrecognized or unexpected symbol:", line, i);
 				}
 			}
 		}
@@ -454,9 +527,7 @@ public abstract class HTMLReader implements Reader
 
 							if (line.charAt(start+1) == '#')	
 							{
-								c = new Color(Integer.parseInt(line.substring(start+2,start+4), 16),
-										Integer.parseInt(line.substring(start+4,start+6), 16),
-										Integer.parseInt(line.substring(start+6,start+8), 16));
+								c = new Color(Integer.parseInt(line.substring(start+2,start+8), 16));
 							}
 							else
 							{
