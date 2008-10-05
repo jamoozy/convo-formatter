@@ -13,16 +13,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * The graphical user interface component of the software.  This is responsible
- * for creating and displaying the GUI you see on screen.
+ * The graphical user interface component of the software.  This is
+ * responsible for creating and displaying the GUI you see on screen.
  * 
  * @author Andrew Correa
  */
 public class GUI implements Runnable
 {
 	/**
-	 * The method that initiates the entire operation of this class.
-	 * Required by the {@link Runnable} interface.
+   * The method that initiates the entire operation of this class.  Required
+   * by the {@link Runnable} interface.
 	 */
 	public void run()
 	{
