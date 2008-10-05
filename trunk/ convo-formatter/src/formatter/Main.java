@@ -16,8 +16,9 @@ import writer.DeadAIMWriter;
  * <ul>
  * <li> <code>--trillian-deadaim</code> to test the conversion from Trillian
  * text format to DeadAIM HTML format. This requires two additional arguments:
- * The relative name of the Trillian input file (e.g. <code>in/TrillEx.txt</code>)
- * and the output directory (e.g. <code>out/</code>)</li>
+ * The relative name of the Trillian input file (e.g.
+ * <code>in/TrillEx.txt</code>) and the output directory (e.g.
+ * <code>out/</code>)</li>
  * <li> <code>--read-deadaim</code> to test the DeadAIM HTML read capability.
  * This requires one additional argument: the name of the input file. </li>
  * </ul>
