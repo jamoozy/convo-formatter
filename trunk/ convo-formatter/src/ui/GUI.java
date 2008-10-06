@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 /**
  * The graphical user interface component of the software.  This is
@@ -20,46 +21,54 @@ import javax.swing.JPanel;
  */
 public class GUI implements Runnable
 {
-	/**
+  /**
    * The method that initiates the entire operation of this class.  Required
    * by the {@link Runnable} interface.
-	 */
-	public void run()
-	{
-		// Make sure we have nice window decorations.
-		JFrame.setDefaultLookAndFeelDecorated(false);
+   */
+  public void run()
+  {
+    // Make sure we have nice window decorations.
+    JFrame.setDefaultLookAndFeelDecorated(false);
 
-		// Create and set up the window.
-		JFrame frame = new JFrame("Conversation formatter");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    // Create and set up the window.
+    JFrame frame = new JFrame("Conversation formatter");
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JLabel label = new JLabel("Here's a label.");
+    JTabbedPane tabs = new JTabbedPane();
+    tabs.addTab("Tab!", makeTab1());
 
-		JButton button = new JButton("I'm a Swing button!");
-		button.setMnemonic(KeyEvent.VK_I);
-		button.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				System.out.println("button pressed");
-			}
-		});
-		label.setLabelFor(button);
+    frame.getContentPane().add(tabs, BorderLayout.CENTER);
+    
+    // Display the window.
+    frame.pack();
+    frame.setVisible(true);
+  }
 
-		JPanel pane = new JPanel(new GridLayout(0, 1));
-		pane.add(label);
-		pane.add(button);
-		pane.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
+  public JPanel makeTab1()
+  {
+    JPanel panel = new JPanel(new GridLayout(0, 1));
+    panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
 
-		frame.getContentPane().add(pane, BorderLayout.CENTER);
-		
-		// Display the window.
-		frame.pack();
-		frame.setVisible(true);
-	}
-	
-	public static void main(String[] args)
-	{
-		javax.swing.SwingUtilities.invokeLater(new GUI());
-	}
+    JLabel label = new JLabel("Here's a label.");
+    panel.add(label);
+
+    JButton exit_button = new JButton("I'm a Swing button!");
+    exit_button.setMnemonic(KeyEvent.VK_I);
+    exit_button.addActionListener(new ActionListener()
+    {
+      public void actionPerformed(ActionEvent e)
+      {
+        System.out.println("Exit button pressed.");
+      }
+    });
+    label.setLabelFor(exit_button);
+    panel.add(exit_button);
+
+    return panel;
+  }
+  
+  public static void main(String[] args)
+  {
+    javax.swing.SwingUtilities.invokeLater(new GUI());
+  }
 }
