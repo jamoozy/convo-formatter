@@ -25,126 +25,126 @@ import writer.DeadAIMWriter;
  */
 public class Main
 {
-	/**
-	 * Evaluate the argument(s) and proceed accordingly.
-	 */
-	public static void main(String[] args)
-	{
-		if (args.length == 0)
-		{
-			System.out.println("Too few arguments.");
-			return;
-		}
+  /**
+   * Evaluate the argument(s) and proceed accordingly.
+   */
+  public static void main(String[] args)
+  {
+    if (args.length == 0)
+    {
+      System.out.println("Too few arguments.");
+      return;
+    }
 
-		if (args[0].equalsIgnoreCase("--trillian-deadaim"))
-			tril2Daim(args);
-		else if (args[0].equalsIgnoreCase("--read-deadaim"))
-			testDeadAim(args);
-		else
-			System.out.println("Unrecognized command");
-	}
+    if (args[0].equalsIgnoreCase("--trillian-deadaim"))
+      tril2Daim(args);
+    else if (args[0].equalsIgnoreCase("--read-deadaim"))
+      testDeadAim(args);
+    else
+      System.out.println("Unrecognized command");
+  }
 
-	/**
-	 * An example of how to read a DeadAIM file.
-	 */
-	public static void testDeadAim(String[] args)
-	{
-		if (args.length != 2)
-		{
-			System.err.println("DeadAIM HTML reader test usage:");
-			System.err.println("\t1st arg: " + args[0]);
-			System.err.println("\t2nd arg: [DeadAIM file]");
-			return;
-		}
+  /**
+   * An example of how to read a DeadAIM file.
+   */
+  public static void testDeadAim(String[] args)
+  {
+    if (args.length != 2)
+    {
+      System.err.println("DeadAIM HTML reader test usage:");
+      System.err.println("\t1st arg: " + args[0]);
+      System.err.println("\t2nd arg: [DeadAIM file]");
+      return;
+    }
 
-		DeadAIMReader reader = new DeadAIMReader();
-		try
-		{
-			reader.loadFile(args[1]);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
+    DeadAIMReader reader = new DeadAIMReader();
+    try
+    {
+      reader.loadFile(args[1]);
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+  }
 
-	/**
-	 * An example of how to read from a Trillian log file using the TrillianReader
-	 * and using the generated session date to write to a file in DeadAIM log
-	 * format using the DeadAIMwriter class.
-	 * 
-	 * @param args The command line arguments.  This assumes that <code>args[1]</code>
-	 *             is the name of the file to read from and <code>args[2]</code> is
-	 *             the directory to write to.  Further, it assumes that
-	 *             <code>args[1]</code> is in Trillian log format.
-	 * 
-	 * @throws IllegalArgumentException If there are not exactly 3 arguments.
-	 */
-	public static void tril2Daim(String[] args)
-	{
-		if (args.length != 3)
-		{
-			System.err.println("Trillian to DeadAIM conversion test usage:");
-			System.err.println("\t1st arg: " + args[0]);
-			System.err.println("\t2nd arg: [Trillian file]");
-			System.err.println("\t3rd arg: [output directory]");
-			return;
-		}
+  /**
+   * An example of how to read from a Trillian log file using the TrillianReader
+   * and using the generated session date to write to a file in DeadAIM log
+   * format using the DeadAIMwriter class.
+   * 
+   * @param args The command line arguments.  This assumes that <code>args[1]</code>
+   *             is the name of the file to read from and <code>args[2]</code> is
+   *             the directory to write to.  Further, it assumes that
+   *             <code>args[1]</code> is in Trillian log format.
+   * 
+   * @throws IllegalArgumentException If there are not exactly 3 arguments.
+   */
+  public static void tril2Daim(String[] args)
+  {
+    if (args.length != 3)
+    {
+      System.err.println("Trillian to DeadAIM conversion test usage:");
+      System.err.println("\t1st arg: " + args[0]);
+      System.err.println("\t2nd arg: [Trillian file]");
+      System.err.println("\t3rd arg: [output directory]");
+      return;
+    }
 
-		TrillianReader tr = new TrillianReader();
+    TrillianReader tr = new TrillianReader();
 
-		try
-		{
-			// Reads the file and loads it into the tr object.
-			tr.loadFile(args[1]);
-			System.out.println("File loaded.");
-		}
-		catch (IOException e)
-		{
-			System.err.println("Unexpected exception: " + e.getClass().getSimpleName());
-			e.printStackTrace();
-			return;
-		}
+    try
+    {
+      // Reads the file and loads it into the tr object.
+      tr.loadFile(args[1]);
+      System.out.println("File loaded.");
+    }
+    catch (IOException e)
+    {
+      System.err.println("Unexpected exception: " + e.getClass().getSimpleName());
+      e.printStackTrace();
+      return;
+    }
 
-		Iterator<Session> iter = tr.iterator();
+    Iterator<Session> iter = tr.iterator();
 
-		// Rhis serves mainly as an example of how to convert from Trillian plain text
-		// files to DeadAIM HTML files.
+    // Rhis serves mainly as an example of how to convert from Trillian plain text
+    // files to DeadAIM HTML files.
 
-		// The first one is a special call.
-		Session session = null;
-		if (iter.hasNext())
-			session = iter.next();
+    // The first one is a special call.
+    Session session = null;
+    if (iter.hasNext())
+      session = iter.next();
 
-		Date currDate = null;
+    Date currDate = null;
 
-		// If the session is null then that means we've used up the last of the sessions.
-		// If the last-used date and the date of the current session are the same, that
-		// means the last Session and the current one are the same.
-		while (session != null && session.getDate() != currDate)
-		{
-			currDate = session.getDate();
-			DeadAIMWriter writer = new DeadAIMWriter(session.getMySN());
-			writer.makeFile(args[2], session);
+    // If the session is null then that means we've used up the last of the sessions.
+    // If the last-used date and the date of the current session are the same, that
+    // means the last Session and the current one are the same.
+    while (session != null && session.getDate() != currDate)
+    {
+      currDate = session.getDate();
+      DeadAIMWriter writer = new DeadAIMWriter(session.getMySN());
+      writer.makeFile(args[2], session);
 
-			// Each subsiquent session is another call.
-			while (iter.hasNext() && (session = iter.next()).getDate().equals(currDate))
-			{
-				writer.addSession(session);
-				session = null;    // Adding this line makes the outer loop work ;-)
-			}
+      // Each subsiquent session is another call.
+      while (iter.hasNext() && (session = iter.next()).getDate().equals(currDate))
+      {
+        writer.addSession(session);
+        session = null;    // Adding this line makes the outer loop work ;-)
+      }
 
-			writer.closeFile();
-		}
+      writer.closeFile();
+    }
 
-		System.out.println("Done.");
-	}
+    System.out.println("Done.");
+  }
 
-	/**
-	 * Creates and runs a new GUI.
-	 */
-	public static void runGUI()
-	{
-		javax.swing.SwingUtilities.invokeLater(new GUI());
-	}
+  /**
+   * Creates and runs a new GUI.
+   */
+  public static void runGUI()
+  {
+    javax.swing.SwingUtilities.invokeLater(new GUI());
+  }
 }

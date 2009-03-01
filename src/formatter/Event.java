@@ -10,10 +10,10 @@ package formatter;
  */
 public interface Event
 {
-	/**
-	 * Returns the time this <code>Event</code> took place.
-	 * 
-	 * @return The time this <code>Event</code> took place.
-	 */
-	public Timestamp getTimestamp();
+  /**
+   * Returns the time this <code>Event</code> took place.
+   * 
+   * @return The time this <code>Event</code> took place.
+   */
+  public Timestamp getTimestamp();
 }

@@ -2,10 +2,10 @@ package reader;
 
 public class NoFileException extends RuntimeException
 {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public NoFileException(String s)
-	{
-		super(s);
-	}
+  public NoFileException(String s)
+  {
+    super(s);
+  }
 }

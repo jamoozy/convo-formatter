@@ -42,6 +42,8 @@
           basedir="${build.home}"/>
   </target>
 
+  <target name="doc" depends="docs" />
+  <target name="docs" depends="javadoc" />
   <target name="javadoc" depends="compile"
    description="Create Javadoc API documentation">
     <mkdir dir="${dist.home}"/>
