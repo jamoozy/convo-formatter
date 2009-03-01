@@ -10,12 +10,12 @@ import formatter.Session;
  */
 public interface Writer
 {
-	/**
-	 * Creates a new file with the given {@link Session}, and stores it
-	 * in the given parent directory.
-	 * 
-	 * @param dir The parent directory of the file to be created.
-	 * @param session The {@link Session} object to create a new log from.
-	 */
-	public void makeFile(String dir, Session session);
+  /**
+   * Creates a new file with the given {@link Session}, and stores it
+   * in the given parent directory.
+   * 
+   * @param dir The parent directory of the file to be created.
+   * @param session The {@link Session} object to create a new log from.
+   */
+  public void makeFile(String dir, Session session);
 }
