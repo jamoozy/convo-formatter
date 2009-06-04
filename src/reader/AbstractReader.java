@@ -18,10 +18,20 @@ abstract class AbstractReader implements Reader
 
   public Iterator<Session> iterator()
   {
-    return sessions.iterator();
+    if (sessions != null)
+      return sessions.iterator();
+    else
+      return null;
   }
 
-  protected BufferedReader getBufferedReader(String filename)
+  /**
+   * Creaes a {@link BufferedReader} for the given file name.
+   *
+   * @param filename The name of the file.
+   *
+   * @return a {@link BufferedReader} object for the file.
+   */
+  protected static BufferedReader getBufferedReader(String filename)
   {
     try
     {
@@ -36,7 +46,7 @@ abstract class AbstractReader implements Reader
   /**
    * Loads the file with the given URL.
    * 
-   * @param name The name of the file to open.
+   * @param filename The name of the file to open.
    * @return <code>true</code> if successful, <code>false</code> otherwise.
    * 
    * @throws IOException if any other IO error occurs during reading.
@@ -56,6 +66,9 @@ abstract class AbstractReader implements Reader
       _parseLine(i, next);
       next = reader.readLine();
     }
+
+    if (Session.sessionIsActive())
+      Session.closeSession();
 
     return true;
   }

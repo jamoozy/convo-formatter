@@ -63,12 +63,12 @@ public abstract class HTMLReader implements Reader
   }
 
   /**
-   * This must be called at the top of the child class's <code>loadFile(String)</code>
-   * method.
+   * This must be called at the top of the child class's
+   * <code>loadFile(String)</code> method.
    *
    * @param filename The name of the file to open and read from.
    *
-   * @see Reader.loadFile(String)
+   * @see Reader#loadFile(String)
    */
   public boolean loadFile(String filename) throws IOException
   {
