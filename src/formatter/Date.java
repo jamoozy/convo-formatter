@@ -5,7 +5,7 @@ package formatter;
  * the week).  The distinction between the "date" and the "day" are that the 
  * date is a number from 1 to 31 and is relative to the month, whereas the day
  * is a {@link String} that correlates to the day within the week, e.g.
- * <code>"Tuesday"</code> and <code>"Friday"</code>.
+ * <code>"Tuesday"</code>.
  * 
  * @author Andrew Correa
  */
@@ -14,11 +14,49 @@ public class Date
   ////////////////////////////////////////////////////////////////////////////
   // ---------------------------- Conversions ----------------------------- //
   ////////////////////////////////////////////////////////////////////////////
+
+  public static Date makeDateMDY(String mdy)
+  {
+    String[] parts = mdy.split(" ");
+
+    if (parts.length != 3)
+      throw new IllegalArgumentException("There are only " +
+              parts.length + " parts.");
+
+    return makeDateMDY(parts[0], parts[1], parts[2]);
+  }
+
+  public static Date makeDateMDY(String date, String month, String year)
+  {
+    int d, m, y;
+
+    try {
+      d = Integer.parseInt(date);
+    } catch (IllegalArgumentException nfe) {
+      throw new IllegalArgumentException("Date was not a number: " + year);
+    }
+
+    try {
+      m = Integer.parseInt(month);
+    } catch (IllegalArgumentException nfe) {
+      m = monthToInt(month);
+    }
+
+    try {
+      y = Integer.parseInt(year);
+    } catch (IllegalArgumentException nfe) {
+      throw new IllegalArgumentException("Year was not a number: " + year);
+    }
+
+    return new Date(y, m, d);
+  }
   
   /**
-   * Converts the smaller section of a day-of-the-week's name to the full section.
+   * Converts the smaller section of a day-of-the-week's name to the full
+   * section.
    *
-   * @param day The beginning of the day of the week.  Must be at least 2 characters.
+   * @param day The beginning of the day of the week.  Must be at least 2
+   *            characters.
    * @return The full name of the day of the week.  E.g. "Wednesday"
    *
    * @throws IllegalArgumentException If the parameter is not a day of the week.
@@ -32,7 +70,10 @@ public class Date
         return "Monday";
       case 'T':
       case 't':
-        return ((day.charAt(1) == 'u' || day.charAt(1) == 'U')? "Tuesday" : "Thursday");
+        if (day.charAt(1) == 'u' || day.charAt(1) == 'U')
+          return "Tuesday";
+        else
+          return "Thursday";
       case 'W':
       case 'w':
         return "Wednesday";
@@ -41,7 +82,10 @@ public class Date
         return "Friday";
       case 'S':
       case 's':
-        return ((day.charAt(1) == 'u' || day.charAt(1) == 'U')? "Sunday" : "Saturday");
+        if (day.charAt(1) == 'u' || day.charAt(1) == 'U')
+          return "Sunday";
+        else
+          return "Saturday";
       default:
         System.err.println("Got day:" + day + " in TrillianReader.dayToFullName()");
         return null;

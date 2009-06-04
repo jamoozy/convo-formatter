@@ -2,7 +2,7 @@ package formatter;
 
 /**
  * A time stamp is an hour, minute and second group representing the time.
- * 
+ *
  * @author Andrew Correa
  */
 public class Timestamp
@@ -12,11 +12,47 @@ public class Timestamp
   private int minute;
   private int second;
 
-  
-  
+
+
   ////////////////////////////////////////////////////////////////////////////
   // -------------------------- Initialization ---------------------------- //
-  ////////////////////////////////////////////////////////////////////////////  
+  ////////////////////////////////////////////////////////////////////////////
+
+  public static Timestamp parseTimestamp(String time)
+  {
+    time.replace("[() ]", "");
+    String[] parts = time.split(" :");
+
+    int h, m, s;
+
+    try {
+      h = Integer.parseInt(parts[0]);
+    } catch (NumberFormatException nfe) {
+      throw new IllegalArgumentException("Hour is not a number: " + parts[0]);
+    }
+
+    try {
+      m = Integer.parseInt(parts[0]);
+    } catch (NumberFormatException nfe) {
+      throw new IllegalArgumentException("Minute is not a number: " + parts[1]);
+    }
+
+    try {
+      s = Integer.parseInt(parts[0]);
+    } catch (NumberFormatException nfe) {
+      throw new IllegalArgumentException("Second is not a number: " + parts[2]);
+    }
+
+    if (parts.length == 4 && parts[3].equalsIgnoreCase("pm")) h += 12;
+
+    return new Timestamp(h, m, s);
+  }
+
+
+
+  ////////////////////////////////////////////////////////////////////////////
+  // -------------------------- Initialization ---------------------------- //
+  ////////////////////////////////////////////////////////////////////////////
 
   /**
    * Makes a new <code>Timestamp</code> representing the time:<br />
@@ -26,52 +62,51 @@ public class Timestamp
    * @param s Second of the time.
    */
   public Timestamp(int h, int m, int s)
-  {    
-    
+  {
     if (h > 23 || h < 0)
       throw new IllegalArgumentException("Hour must be in [0,23]  got:" + h);
-    
+
     if (m > 59 || m < 0)
       throw new IllegalArgumentException("Minute must be in [0,59]  got:" + m);
-    
+
     if (s > 59 || s < 0)
       throw new IllegalArgumentException("Second must be in [0,59]  got:" + s);
-    
+
     hour = h;
     minute = m;
     second = s;
   }
-  
-  
-  
+
+
+
   ////////////////////////////////////////////////////////////////////////////
   // ---------------------------- Accessors ------------------------------- //
-  ////////////////////////////////////////////////////////////////////////////  
-  
+  ////////////////////////////////////////////////////////////////////////////
+
   /**
    * Returns the hour in the 12-hour time system.
    * @return A number in [1,12]
    */
   public int getHour12() { return hour + ((hour > 12)? -12 : ((hour == 0)? 12 : 0)); }
-  
+
   /**
    * Returns the hour in the 24-hour time system.
    * @return A number in [0,23]
    */
   public int getHour24() { return hour; }
-  
+
   /**
    * Returns the minute of time.
    * @return A number in [0,59]
    */
   public int getMinute() { return minute; }
-  
+
   /**
    * Returns the second in time.
    * @return A number in [0,59]
    */
   public int getSecond() { return second; }
-  
+
   /**
    * Returns <code>"AM"</code> or <code>"PM"</code> depending on whether it's am or pm.
    * @return <code>"AM"</code> or <code>"PM"</code>
