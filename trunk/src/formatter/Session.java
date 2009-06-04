@@ -5,19 +5,23 @@ import java.util.Vector;
 
 
 /**
- * This is one chat.  This is the representation of chat {@link Notification}s and {@link Message}s
- * Which make up the time between when a chat window was opened and when one was closed.
- * For some formats this is one file, for others it is not.
+ * This is one chat.  This is the representation of chat {@link Notification}s
+ * and {@link Message}s Which make up the time between when a chat window was
+ * opened and when one was closed.  For some formats this is one file, for
+ * others it is not.
  * <p>
- * This class doubles as its own factory.  It allows only one <code>Session</code> at a time.
- * To create a new <code>Session</code>, call {@link Session#makeSession(String,String,Date)}.
- * Once you're done, call {@link Session#closeSession()} before trying to start another session.
- * At any time, you can call {@link Session#getSession()} to access the active <code>Session</code>.
+ * This class doubles as its own factory.  It allows only one
+ * <code>Session</code> at a time.  To create a new <code>Session</code>, call
+ * {@link Session#makeSession(String,String,Date)}.  Once you're done, call
+ * {@link Session#closeSession()} before trying to start another session.  At
+ * any time, you can call {@link Session#getSession()} to access the active
+ * <code>Session</code>.
  * <p>
- * I have decided to call the person that created the log, i.e. the person that saved this log
- * "me" and the person that is talking with "me", "you".  Therefore, {@link #getMySN()} returns
- * the name of the creator of this log, and {@link #getYourSN()} returns the name of the person
- * talking with "me" -- the other guy.
+ * I have decided to call the person that created the log, i.e. the person that
+ * saved this log "me" and the person that is talking with "me", "you".
+ * Therefore, {@link #getMySN()} returns the name of the creator of this log,
+ * and {@link #getYourSN()} returns the name of the person talking with "me" --
+ * the other guy.
  *
  * @author Andrew Correa
  */
@@ -30,8 +34,8 @@ public class Session
   private static Session session;       // Currently active session.
 
   /**
-   * Creates and sets active a new Session. This method is the only way
-   * to create a new <code>Session</code> object.
+   * Creates and sets active a new Session. This method is the only way to
+   * create a new <code>Session</code> object.
    * 
    * @param mySN The name of the SN that is "me".
    * @param yourSN The name of the SN that I'm speaking with.
@@ -41,7 +45,8 @@ public class Session
   public static Session makeSession(String mySN, String yourSN, Date date)
   {
     if (session != null)
-      throw new AlreadyActiveException("Must close current Session before starting a new one.");
+      throw new AlreadyActiveException("Must close current Session "
+              + "before starting a new one.");
 
     session = new Session(mySN, yourSN, date);
     return session;
@@ -68,8 +73,8 @@ public class Session
   /**
    * Determines if there is a <code>Session</code> already active.
    * 
-   * @return <code>true</code> if there is an already active <code>Session</code>
-   *         <code>false</code> otherwise.
+   * @return <code>true</code> if there is an already active
+   *         <code>Session</code> <code>false</code> otherwise.
    */
   public static boolean sessionIsActive()
   {
@@ -82,10 +87,10 @@ public class Session
   // ---------------------------- actual class ---------------------------- //
   ////////////////////////////////////////////////////////////////////////////
 
-  private String mySN;             // The SN of the person that saved this log.
-  private String yourSN;           // The SN of the person talking with "me"
-  private Date date;               // When this Session took place.
-  private Vector<Event> events;    // The Events this Session consists of.
+  private String mySN;            // The SN of the person that saved this log.
+  private String yourSN;          // The SN of the person talking with "me"
+  private Date date;              // When this Session took place.
+  private Vector<Event> events;   // The Events this Session consists of.
 
   /**
    * Constructs a new <code>Session</code> object with the given parameters.
@@ -105,12 +110,12 @@ public class Session
 
   /**
    * Appends the contents of the {@link String} object to the end of the last
-   * {@link Message}.  Assumes the last {@link Event} passed to {@link #add(Event)}
-   * was of type {@link Message}.  If the last <code>Event</code> was not of
-   * type <code>Message</code> then an exception is thrown.
+   * {@link Message}.  Assumes the last {@link Event} passed to {@link
+   * #add(Event)} was of type {@link Message}.  If the last <code>Event</code>
+   * was not of type <code>Message</code> then an exception is thrown.
    *
-   * @throws IllegalArgumentException when the last {@link Event} object was
-   *         not of type {@link Message}.
+   * @throws IllegalArgumentException when the last {@link Event} object was not
+   *         of type {@link Message}.
    */
   public void append(String msg)
   {
