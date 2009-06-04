@@ -1,9 +1,9 @@
 package reader;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -19,51 +19,12 @@ import formatter.Timestamp;
  * 
  * @author Andrew Correa
  */
-public class TrillianReader implements Reader
+public class TrillianReader extends AbstractReader
 {
-  private Vector<Session> sessions;  // The sessions in the last-read file.
-
   /**
    * Creates a new TrillianReader().  Nothing special here.
    */
   public TrillianReader()  {}
-
-  /**
-   * Loads the file with the given URL.
-   * 
-   * @param name The name of the file to open.
-   * @return <code>true</code> if successful, <code>false</code> otherwise.
-   * 
-   * @throws IOException if any other IO error occurs during reading.
-   * @throws FileNotFoundException if the file can't be found.
-   * @throws FileFormatException if the file's format is bad.
-   * 
-   * @see Reader#loadFile(String)
-   */
-  public boolean loadFile(String name) throws IOException
-  {
-    BufferedReader reader;
-
-    try
-    {
-      reader = new BufferedReader(new FileReader(name));
-    }
-    catch (FileNotFoundException fnfe)
-    {
-      throw new FileNotFoundException("File " + name + " does not exist!");
-    }
-
-    sessions = new Vector<Session>();
-    String next = reader.readLine();
-
-    for (int i = 1; next != null; i++)
-    {
-      _parseLine(i, next);
-      next = reader.readLine();
-    }
-
-    return true;
-  }
 
   /**
    * Parse this line.
@@ -73,7 +34,7 @@ public class TrillianReader implements Reader
    *
    * @throws FileFormatException When the file is not formattec correctly.
    */
-  private void _parseLine(int lineNumber, String line) throws FileFormatException
+  protected void _parseLine(int lineNumber, String line) throws FileFormatException
   {
     line = line.trim();
 
@@ -242,17 +203,6 @@ public class TrillianReader implements Reader
     String day = Date.dayToFullName(line.substring(start, start+3));
 
     return new Date(year, month, date, day);
-  }
-
-
-  /**
-   * Returns an <code>{@link Iterator}&lt;{@link Session}&gt;</code> of the
-   * messages in the file last read by this <code>TrillanReader</code>
-   * @return The messages in the last-read file.
-   */
-  public Iterator<Session> iterator()
-  {
-    return sessions.iterator();
   }
 
   public static void main(String[] args)
