@@ -72,12 +72,12 @@ public class Main
    * An example of how to read from a Trillian log file using the TrillianReader
    * and using the generated session date to write to a file in DeadAIM log
    * format using the DeadAIMwriter class.
-   * 
+   *
    * @param args The command line arguments.  This assumes that <code>args[1]</code>
    *             is the name of the file to read from and <code>args[2]</code> is
    *             the directory to write to.  Further, it assumes that
    *             <code>args[1]</code> is in Trillian log format.
-   * 
+   *
    * @throws IllegalArgumentException If there are not exactly 3 arguments.
    */
   public static void tril2Daim(String[] args)

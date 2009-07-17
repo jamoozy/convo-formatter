@@ -2,11 +2,11 @@ package formatter;
 
 /**
  * Stores the year, month, date (day of the month), and day (name of the day of
- * the week).  The distinction between the "date" and the "day" are that the 
+ * the week).  The distinction between the "date" and the "day" are that the
  * date is a number from 1 to 31 and is relative to the month, whereas the day
  * is a {@link String} that correlates to the day within the week, e.g.
  * <code>"Tuesday"</code>.
- * 
+ *
  * @author Andrew Correa
  */
 public class Date
@@ -50,7 +50,7 @@ public class Date
 
     return new Date(y, m, d);
   }
-  
+
   /**
    * Converts the smaller section of a day-of-the-week's name to the full
    * section.
@@ -91,7 +91,7 @@ public class Date
         return null;
     }
   }
-  
+
   /**
    * Returns the number corresponding to the month in the year.  E.g. March is 3, December is 12.
    *
@@ -129,9 +129,9 @@ public class Date
 
     throw new IllegalArgumentException("Unrecognized month:" + month);
   }
-  
-  
-  
+
+
+
   ////////////////////////////////////////////////////////////////////////////
   // ---------------------------- Actual Class ---------------------------- //
   ////////////////////////////////////////////////////////////////////////////
@@ -140,12 +140,12 @@ public class Date
   private int year;
   private int month;
   private int date;
-  
+
   // Name of the day of the week.
   private String day;
-  
-  
-  
+
+
+
   ////////////////////////////////////////////////////////////////////////////
   // --------------------------- Initialization --------------------------- //
   ////////////////////////////////////////////////////////////////////////////
@@ -153,7 +153,7 @@ public class Date
   /**
    * Stores the date represented by the year, month, and date parameters.
    * Computes which date of the week this date represents.
-   * 
+   *
    * @param y Year of the date.
    * @param m Month of the date.
    * @param dt Date of the date -- the day-portion.
@@ -162,7 +162,7 @@ public class Date
   {
     // First this, for error checking.
     this(y,m,dt,null);
-    
+
     // Use this to compute the date for us (yay).
     java.util.Calendar c = java.util.Calendar.getInstance();
     c.set(java.util.Calendar.YEAR, y);
@@ -170,10 +170,10 @@ public class Date
     c.set(java.util.Calendar.DAY_OF_MONTH, dt);
     day = intToString(c.get(java.util.Calendar.DAY_OF_WEEK));
   }
-  
+
   /**
    * Stores the date represented by the year, month, and date parameters.
-   * 
+   *
    * @param y Year of the date.
    * @param m Month of the date.
    * @param dt Date of the date -- the day-portion.
@@ -194,13 +194,13 @@ public class Date
           throw new IllegalArgumentException("Date must be in bounds of month. Month:" + m + " Date:" + dt);
         else
           break;
-        
+
       case 2:    // February
         if (dt > 28)
           throw new IllegalArgumentException("Date must be in bounds of month. Month:" + m + " Date:" + dt);
         else
           break;
-        
+
       case 4:    // April
       case 6:    // June
       case 9:    // September
@@ -209,11 +209,11 @@ public class Date
           throw new IllegalArgumentException("Date must be in bounds of month. Month:" + m + " Date:" + dt);
         else
           break;
-        
+
       default:
         throw new IllegalArgumentException("Month must be in [1,12].  got:" + m);
     }
-    
+
     if (dt < 1)
       throw new IllegalArgumentException("Date must be greater than 0.  got:" + dt);
 
@@ -222,11 +222,11 @@ public class Date
     date = dt;
     day = dy;
   }
-  
+
   /*
    * Converts from a {@link Calendar} int representation of a day of the
    * week to a string representation.
-   *  
+   *
    * @param i The int representation.
    * @return The String representation.
    */
@@ -252,9 +252,9 @@ public class Date
         throw new IllegalArgumentException("Illegal day:" + i);
     }
   }
-  
-  
-  
+
+
+
   ////////////////////////////////////////////////////////////////////////////
   // ---------------------------- Accessors ------------------------------- //
   ////////////////////////////////////////////////////////////////////////////
@@ -264,19 +264,19 @@ public class Date
    * @return The year.
    */
   public int getYear() { return year; }
-  
+
   /**
    * Returns the month of th year, e.g. "3" for March.
    * @return The month.
    */
   public int getMonth() { return month; }
-  
+
   /**
    * Returns the day of the month.  E.g. the 4th.
    * @return The date.
    */
   public int getDate() { return date; }
-  
+
   /**
    * Returns the day of the week.  E.g. "Wednesday"
    * @return The day.
@@ -291,12 +291,12 @@ public class Date
   {
     return year + "/" + month + "/" + date + " -- (" + day + ")";
   }
-  
+
   /**
    * Determines if the passed date object is equivalent to this one.
-   * 
+   *
    * @param that The other date to compare <code>this</code> with.
-   * 
+   *
    * @return Returns <code>true</code> if the dates are the same
    *         and <code>false</code> otherwise.
    */
@@ -307,9 +307,9 @@ public class Date
 
   /**
    * Determines if the passed date object is equivalent to this one.
-   * 
+   *
    * @param that The other date to compare <code>this</code> with.
-   * 
+   *
    * @return Returns <code>true</code> if the dates are the same
    *         and <code>false</code> otherwise.
    */
@@ -317,12 +317,12 @@ public class Date
   {
     return this.year == that.year && this.month == that.month && this.date == that.date;
   }
-  
+
   /**
    * Determines if this date is after the passed date.
-   * 
+   *
    * @param that The Date to compare against.
-   * 
+   *
    * @return true if this date is after that date.
    */
   public boolean after(Date that)
@@ -332,9 +332,9 @@ public class Date
 
   /**
    * Determines if this date is before the passed date.
-   * 
+   *
    * @param that The Date to compare against.
-   * 
+   *
    * @return true if this date is before that date.
    */
   public boolean before(Date that)

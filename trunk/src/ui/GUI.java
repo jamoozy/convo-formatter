@@ -16,7 +16,7 @@ import javax.swing.JTabbedPane;
 /**
  * The graphical user interface component of the software.  This is
  * responsible for creating and displaying the GUI you see on screen.
- * 
+ *
  * @author Andrew Correa
  */
 public class GUI implements Runnable
@@ -38,7 +38,7 @@ public class GUI implements Runnable
     tabs.addTab("Tab!", makeTab1());
 
     frame.getContentPane().add(tabs, BorderLayout.CENTER);
-    
+
     // Display the window.
     frame.pack();
     frame.setVisible(true);
@@ -66,7 +66,7 @@ public class GUI implements Runnable
 
     return panel;
   }
-  
+
   public static void main(String[] args)
   {
     javax.swing.SwingUtilities.invokeLater(new GUI());

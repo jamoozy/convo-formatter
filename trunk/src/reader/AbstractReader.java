@@ -45,14 +45,14 @@ abstract class AbstractReader implements Reader
 
   /**
    * Loads the file with the given URL.
-   * 
+   *
    * @param filename The name of the file to open.
    * @return <code>true</code> if successful, <code>false</code> otherwise.
-   * 
+   *
    * @throws IOException if any other IO error occurs during reading.
    * @throws FileNotFoundException if the file can't be found.
    * @throws FileFormatException if the file's format is bad.
-   * 
+   *
    * @see Reader#loadFile(String)
    */
   public boolean loadFile(String filename) throws IOException

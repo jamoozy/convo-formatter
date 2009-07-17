@@ -36,7 +36,7 @@ public class Session
   /**
    * Creates and sets active a new Session. This method is the only way to
    * create a new <code>Session</code> object.
-   * 
+   *
    * @param mySN The name of the SN that is "me".
    * @param yourSN The name of the SN that I'm speaking with.
    * @param date The date this conversation took place.
@@ -54,8 +54,8 @@ public class Session
 
   /**
    * Gets the most recently created <code>Session</code>.
-   * 
-   * @return The most recently created <code>Session</code>. 
+   *
+   * @return The most recently created <code>Session</code>.
    */
   public static Session getSession()
   {
@@ -72,7 +72,7 @@ public class Session
 
   /**
    * Determines if there is a <code>Session</code> already active.
-   * 
+   *
    * @return <code>true</code> if there is an already active
    *         <code>Session</code> <code>false</code> otherwise.
    */
@@ -174,9 +174,9 @@ public class Session
    * starts one day, but ends another.  In this case it is desirable to
    * list the conversation as having occured on the day the conversation
    * ended, as opposed to the day it was begun.
-   * 
+   *
    * @param date The new <code>Date</code> to change to.
-   * 
+   *
    * @throws IllegalArgumentException if the passed date occurs before
    *         the date already registered to the session.
    */
