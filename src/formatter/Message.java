@@ -8,19 +8,24 @@ import java.util.Vector;
 /**
  * <code>Messages</code> are logical combinations of a sender, time stamp, and text
  * with font.  They are the small strings of text that you send back and forth in IMs.
- * 
+ *
  * @author Andrew Correa
  */
 public class Message implements Event
 {
-  private String sender;     // The SN of the person who sent this message.
-  private Timestamp time;    // The time this Message was sent.
-//  private String message;    // The actual text of the message.
-  private Vector<Part> parts;// The different parts of the message string.
-  private Color color;       // The font color of the text of the message.
-  private Font font;         // The font of the message.
-  private boolean auto;      // true if this was an auto-reply.
-  
+  /** The SN of the person who sent this message. */
+  private String sender;
+  /** The time this Message was sent. */
+  private Timestamp time;
+  /** The different parts of the message string. */
+  private Vector<Part> parts;
+  /** The font color of the text of the message. */
+  private Color color;
+  /** The font of the message. */
+  private Font font;
+  /** True if this was an auto-reply. */
+  private boolean auto;
+
   /**
    * Creates a new <code>Message</code>.&nbsp;Assumes black-on-white text.
    *
@@ -33,7 +38,7 @@ public class Message implements Event
   {
     this(sender, time, message, Color.BLACK, new Font("arial", Font.PLAIN, 12), auto);
   }
-  
+
   /**
    * Creates a new <code>Message</code>.
    *
@@ -55,13 +60,13 @@ public class Message implements Event
     this.font = font;
     this.auto = auto;
   }
-  
-  
-  
+
+
+
   ////////////////////////////////////////////////////////////////////////////
   // --------------------------- Simple getters --------------------------- //
   ////////////////////////////////////////////////////////////////////////////
-  
+
   /**
    * Gets the screenname of the sender of this message.
    *
@@ -71,7 +76,7 @@ public class Message implements Event
   {
     return sender;
   }
-  
+
   /**
    * Gets the text of the message sent.  This method ignores any formatting
    * information stored with the string.
@@ -85,9 +90,9 @@ public class Message implements Event
     StringBuffer message = new StringBuffer(iter.next().message);
     while (iter.hasNext())
       message.append(iter.next().message);
-    return message.toString(); 
+    return message.toString();
   }
-  
+
   /**
    * Gets the font Color of the message.
    *
@@ -95,9 +100,9 @@ public class Message implements Event
    */
   public Color getColor()
   {
-    return color; 
+    return color;
   }
-  
+
   /**
    * Gets the font face of the message.
    *
@@ -105,9 +110,9 @@ public class Message implements Event
    */
   public Font getFont()
   {
-    return font; 
+    return font;
   }
-  
+
   /**
    * Gets the Time this message was sent.
    *
@@ -117,7 +122,7 @@ public class Message implements Event
   {
     return time;
   }
-  
+
   /**
    * Returns <code>true</code> when the <code>Message</code> is auto-generated
    * and <code>false</code> when it is not.
@@ -151,7 +156,7 @@ public class Message implements Event
    * @param msg The text to append to the end of this <code>Message</code>.
    * @param f The font name of this part of the message.
    * @param c The color of this part of the message.
-   */  
+   */
   public void append(String msg, String f, Color c)
   {
     parts.add(new Part(msg,f,c, 12, false, false));
@@ -173,7 +178,7 @@ public class Message implements Event
   {
     parts.add(new Part(msg,f,c,s,b,i));
   }
-  
+
   /**
    * Puts a simple newline at the end of the current message.
    */
@@ -194,13 +199,19 @@ public class Message implements Event
    * part could be bold and italicized, while another is in a different font
    * and a different color.
    */
-  private class Part
+  public class Part
   {
+    /** The text of the part. */
     String message;
+    /** The font used. */
     String font;
+    /** The color of this part. */
     Color c;
+    /** The size of this part. */
     int size;
+    /** Whether this part is bold. */
     boolean bold;
+    /** Whether this part is italicized. */
     boolean italic;
 
     /**
@@ -224,6 +235,54 @@ public class Message implements Event
       size = s;
       bold = b;
       italic = i;
+    }
+
+    /**
+     * Gets the message of the this part.
+     */
+    public String getMessage()
+    {
+      return message;
+    }
+
+    /**
+     * Gets the font used.
+     */
+    public String getFont()
+    {
+      return font;
+    }
+
+    /**
+     * Gets the color of this part.
+     */
+    public Color getColor()
+    {
+      return color;
+    }
+
+    /**
+     * Gets the size of this message type.
+     */
+    public int getSize()
+    {
+      return size;
+    }
+
+    /**
+     * Determines if this part is bold.
+     */
+    public boolean isBold()
+    {
+      return bold;
+    }
+
+    /**
+     * Determines if this part is italicized.
+     */
+    public boolean isItalic()
+    {
+      return italic;
     }
   }
 }

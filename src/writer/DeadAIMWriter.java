@@ -21,7 +21,7 @@ import formatter.Timestamp;
 
 /**
  * Writes files in the DeadAIM format.  The file's name is determined by the date.  This format is in HTML.
- * 
+ *
  * @author Andrew Correa
  */
 public class DeadAIMWriter implements Writer
@@ -29,10 +29,10 @@ public class DeadAIMWriter implements Writer
   ////////////////////////////////////////////////////////////////////////////
   // ------------------------------ Static -------------------------------- //
   ////////////////////////////////////////////////////////////////////////////
-  
+
   /**
    * Computes what the filename of log generated at the given date would be.
-   * 
+   *
    * @param session The <code>Session</code> associated with this file.
    * @return The name of the file.
    */
@@ -41,20 +41,20 @@ public class DeadAIMWriter implements Writer
     Date date = session.getDate();
     return String.format("%d-%02d-%02d [%s].htm", date.getYear(), date.getMonth(), date.getDate(), date.getDay());
   }
-  
-  
+
+
 
   ////////////////////////////////////////////////////////////////////////////
   // ------------------------------ Object -------------------------------- //
   ////////////////////////////////////////////////////////////////////////////
-  
+
   private FileWriter writer;  // Thing we write to.
   private Date date;          // The date of this file.
   private String me;          // The name of the screen name to be red.
 
   /**
    * Initializes a new <code>DeadAIMWriter</code> object.
-   * 
+   *
    * @param name Name of "my screen name" in this conversation.
    */
   public DeadAIMWriter(String name)
@@ -62,7 +62,7 @@ public class DeadAIMWriter implements Writer
     writer = null;
     me = name;
   }
-  
+
   /**
    * <p>Creates a new log file with the given <code>Session</code>.  This function
    * creates a new file with the name appropriate to the {@link Date} the
@@ -70,7 +70,7 @@ public class DeadAIMWriter implements Writer
    * to the created file.</p>
    * <p>If an I/O error occurs while adding the file, this method prints out an
    * error message and returns without finishing the operation.</p>
-   * 
+   *
    * @param dir Name of the containing directory.
    * @param session Data to store in the file.
    */
@@ -78,7 +78,7 @@ public class DeadAIMWriter implements Writer
   {
     if (writer != null)
       throw new ExistingFileException("Already writing file: " + writer);
-    
+
     // Store the date for comparison with other sessions.
     date = session.getDate();
     String name = String.format("%s%d-%02d-%02d [%s].htm",
@@ -102,7 +102,7 @@ public class DeadAIMWriter implements Writer
 //      }
 //    }
     // Nevermind ... just append regardless.
-    
+
     // Create a new file writer.
     try
     {
@@ -118,21 +118,21 @@ public class DeadAIMWriter implements Writer
       }
       writer.write("<html>\n<head>\n<title>\nTalk with " + session.getYourSN() + " on " + session.getDate().toString() + "\n</title>\n</head>\n\n<body bgcolor=\"#ffffff\">\n\n");
     }
-    catch (IOException e) 
+    catch (IOException e)
     {
       System.err.println("Could not open file.  Perhaps it is being used by another program?");
       e.printStackTrace();
       return;
     }
-    
+
     addSession(session);
   }
-  
+
   /**
    * Adds a session to the file accessed via the filewriter.
-   * 
+   *
    * @param session The Session to write to the file.
-   * 
+   *
    * @throws IllegalArgumentException if the date passed in represents
    *         a time different the date already associated with the
    *         <code>Session</code>.
@@ -143,14 +143,14 @@ public class DeadAIMWriter implements Writer
       throw new IllegalArgumentException("Passed date preceeds current date.");
 
     Iterator<Event> events = session.iterator();
-    
+
     while (events.hasNext())
       addEvent(events.next());
   }
 
   /**
    * Adds a message to the html file with the appropriate tags.
-   * 
+   *
    * @param message The message to put next in the file.
    */
   private void addEvent(Event event)
@@ -199,7 +199,7 @@ public class DeadAIMWriter implements Writer
         Timestamp ts = n.getTimestamp();
         if (ts != null)
         {
-          writer.write(String.format("<hr><b>Session concluded at %d:%02d:%02d %s</b><hr>\n", 
+          writer.write(String.format("<hr><b>Session concluded at %d:%02d:%02d %s</b><hr>\n",
                                     ts.getHour12(),
                                     ts.getMinute(),
                                     ts.getSecond(),
@@ -227,7 +227,7 @@ public class DeadAIMWriter implements Writer
    *    <li>255 -> "ff"</li>
    *    <li>etc...</li>
    * </ul>
-   * 
+   *
    * @param x Number to convert to a <code>String</code>.
    * @return A two-digit hex value in a <code>String</code>.
    */
@@ -238,7 +238,7 @@ public class DeadAIMWriter implements Writer
 
   /**
    * Finishes up writing the file, adds ending tags, and closes the stream.
-   * 
+   *
    * @return <code>true</code> if the file was successfully closed.  <code>false</code> otherwise.
    */
   public boolean closeFile()
@@ -265,18 +265,18 @@ public class DeadAIMWriter implements Writer
   public static void main(String[] args)
   {
     DeadAIMWriter writer = new DeadAIMWriter("jamoozy");
-    
+
     Timestamp ts1 = new Timestamp(20,31,40);
     Timestamp ts2 = new Timestamp(20,32,32);
     Timestamp ts3 = new Timestamp(20,32,43);
-    
+
     // Create my session with Julian.
     Session s1 = Session.makeSession("jamoozy", "AIMSprudeldudel", new Date(2005, 9, 21, "[day]"));
     s1.add(new Message("jamoozy", ts1, "Back in Deutschland?", new Color(4*16, 0, 8*16), new Font("Arial", Font.PLAIN, 12), false));
     s1.add(new Message("AIMSprudeldudel", ts2, "denver", new Color(0, 0, 0), new Font("Times", Font.PLAIN, 12), false));
     s1.add(new Message("jamoozy", ts3, "What are you doing there?", new Color(4*16, 0, 8*16), new Font("Arial", Font.PLAIN, 12), false));
     Session.closeSession();
-    
+
     // Write a test file.
     System.out.println("Test 1...");
     try {
@@ -294,13 +294,13 @@ public class DeadAIMWriter implements Writer
 //          writer.newFile("C:\\temp", new Date(2005, 9, 23));
 //          System.err.println("Did not throw exception on 2nd call!");
 //        } catch (ExistingFileException e) {}
-//        
+//
 //        writer.closeFile();
 //      }
 //    } catch (ExistingFileException e) {
 //      System.err.println("Threw exception on first call!");
 //    }
-//      
+//
 //    System.out.println("Test 3...");
 //    try {
 //      writer.addEvent(new Message("AIMSprudeldudel", ts2, "denver", new Color(0, 0, 0), new Font("Times", Font.PLAIN, 12), false));

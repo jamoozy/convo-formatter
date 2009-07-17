@@ -3,7 +3,6 @@ package reader;
 import java.io.IOException;
 
 import java.util.Iterator;
-import java.util.Vector;
 
 import formatter.Date;
 import formatter.Event;
@@ -20,7 +19,7 @@ public class PidginTextReader extends AbstractReader
     if (lineNumber == 1)
     {
       // Should read "Conversation with xXx at Day ?? Mon YYYY 6-digit time with
-      // ':'s separating hours from minutes from seconds, 
+      // ':'s separating hours from minutes from seconds,
       String[] parts = line.split(" ");
       Session.makeSession(parts[12], parts[2],
           Date.makeDateMDY(parts[5], parts[6], parts[7]));

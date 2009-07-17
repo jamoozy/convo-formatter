@@ -1,11 +1,6 @@
 package reader;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-
-import java.util.Iterator;
-import java.util.Vector;
 
 import formatter.Date;
 import formatter.Notification;
@@ -14,9 +9,9 @@ import formatter.Session;
 import formatter.Timestamp;
 
 /**
- * The <code>TrillianReader</code> reads a Trillian log file and converts its 
- * contents into multiple {@link Session}s. 
- * 
+ * The <code>TrillianReader</code> reads a Trillian log file and converts its
+ * contents into multiple {@link Session}s.
+ *
  * @author Andrew Correa
  */
 public class TrillianReader extends AbstractReader
@@ -189,10 +184,10 @@ public class TrillianReader extends AbstractReader
 
   /**
    * Reads in the date given a line and starting point of the Date to be read.
-   * 
+   *
    * @param line The line on which the date info lies.
    * @param start The start on the line where the date info starts.
-   * 
+   *
    * @return The <code>Date</code> on the given line at the given point.
    */
   private Date _readDate(String line, int start)

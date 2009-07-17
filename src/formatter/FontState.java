@@ -9,7 +9,7 @@ import java.awt.Color;
  * have altered the state of the text into.  In other words, this class makes
  * it trivial to keep track of what the HTML tags have commanded the browser
  * to do.  This is useful in this program because it allows for an easy way
- * of keeping track of what to put in new message parts. 
+ * of keeping track of what to put in new message parts.
  */
 public class FontState
 {
@@ -34,14 +34,14 @@ public class FontState
 
   // This is the bgcolor stack pointer.
   private int bgi;
-  
+
   // These are meant to keep track of the number of times bold,
   // italics and underline tags have been activated or deactivated.
   // If the number is positive, then the value is true.  When 0,
   // the value is false.  If the number is ever negative, then an
   // error has occured (probably because of a mal-formatted file).
   private int bold, italic, underline;
-  
+
   /**
    * Creates a new <code>FontState</code> with all the default values in place.
    */
@@ -60,10 +60,10 @@ public class FontState
     color[0] = Color.black;
     bgcolor[0] = Color.white;
   }
-  
+
   /**
    * Creates a new <code>FontState</code> with the passed two default values.
-   * 
+   *
    * @param defaultSize The default (starting) size.
    * @param defaultTypeface The default (starting) typeface.
    * @param defaultColor The default (starting) color.
@@ -194,7 +194,7 @@ public class FontState
     // Guaranteed to have at least one.
     return typeface[fonti-1];
   }
-  
+
   /**
    * Get the current font color.
    * @return The current font color.

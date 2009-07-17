@@ -13,13 +13,13 @@ public class Lexer
 {
   private FileReader reader;
   private boolean html;
-  
+
   private char in;
-  
+
   /**
-   * 
+   *
    * @param name
-   * 
+   *
    * @throws FileNotFoundException
    * @throws IOException
    */
@@ -29,7 +29,7 @@ public class Lexer
     in = (char)reader.read();
     html = false;
   }
-  
+
   public Lexeme next()
   {
     try
@@ -51,7 +51,7 @@ public class Lexer
           html = false;
           nextIn();
           return next();
-          
+
         case ' ':
           nextIn();
           return next();
@@ -78,32 +78,32 @@ public class Lexer
                 value.append(in);
                 nextIn();
               }
-              
+
               while (isBlank(in) || in == '"');
-              
+
               return new Lexeme(Type.toType(name.toString()), value.toString());
             }
-            
+
             return new Lexeme(Type.toType(name.toString()));
           }
           else
           {
             StringBuffer buffer = new StringBuffer(in);
             nextIn();
-            
+
             while (in != '<')
             {
               if (in == '&')
               {
                 StringBuffer symbol = new StringBuffer("");
-                
+
                 do
                 {
                   nextIn();
                   symbol.append(in);
                 }
                 while (in != ';');
-                
+
                 if (symbol.equals("nbsp")) buffer.append(' ');
                 if (symbol.equals("gt")) buffer.append('>');
                 if (symbol.equals("lt")) buffer.append('<');
@@ -112,10 +112,10 @@ public class Lexer
               {
                 buffer.append(in);
               }
-              
+
               nextIn();
             }
-            
+
             return new Lexeme(Type.text, buffer.toString());
           }
       }
@@ -127,12 +127,12 @@ public class Lexer
       return null;
     }
   }
-  
+
   private boolean isBlank(char c)
   {
     return (c == ' ');// || c == '\n' || c == '\r');
   }
-  
+
   private void nextIn() throws IOException
   {
     in = (char)reader.read();

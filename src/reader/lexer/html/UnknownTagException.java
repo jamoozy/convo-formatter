@@ -8,7 +8,7 @@ public class UnknownTagException extends RuntimeException
   {
     super();
   }
-  
+
   public UnknownTagException(String msg)
   {
     super(msg);

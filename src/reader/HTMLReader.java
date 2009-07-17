@@ -15,16 +15,16 @@ import formatter.Session;
 /**
  * Defines the required methods for a class that Reads from a log file
  * formatted in a certain way.
- * 
+ *
  * @author Andrew Correa
  */
 public abstract class HTMLReader implements Reader
 {
   /**
-   * Keeps track of what state the font is in. It is updated by calling
-   * {@link #extractTag(String)} with {@link String} objects containing
-   * HTML tags at the front. Do not alter this variable directly unless
-   * you really know what you are doing and you have a good reason.
+   * Keeps track of what state the font is in. It is updated by calling {@link
+   * #extractTag(String)} with {@link String} objects containing HTML tags at
+   * the front. Do not alter this variable directly unless you really know
+   * what you are doing and you have a good reason.
    */
   protected FontState fs;
 
@@ -34,17 +34,18 @@ public abstract class HTMLReader implements Reader
   protected Vector<Session> sessions;
 
   /**
-   * The link to the file passed to {@link #loadFile(String)}. Should only
-   * be read in {@link #loadFile(String)}.  Will be null elsewhere.
+   * The link to the file passed to {@link #loadFile(String)}. Should only be
+   * read in {@link #loadFile(String)}.  Will be null elsewhere.
    */
   protected BufferedReader reader;
-  
+
   /**
-   * The next line of input of input from the file passed to {@link #loadFile(String)}.
-   * Should only be referenced in {@link #loadFile(String)}.
+   * The next line of input of input from the file passed to {@link
+   * #loadFile(String)}.  Should only be referenced in {@link
+   * #loadFile(String)}.
    */
   protected String line;
-  
+
   /**
    * The line number that {@link #line} represents in the file.
    */
@@ -60,6 +61,15 @@ public abstract class HTMLReader implements Reader
     reader = null;
     line = null;
     lineNumber = 0;
+  }
+
+  /**
+   * Gets an iterator with all the <code>Sessions</code> elements in this
+   * reader.
+   */
+  public Iterator<Session> iterator()
+  {
+    return sessions.iterator();
   }
 
   /**
@@ -89,7 +99,7 @@ public abstract class HTMLReader implements Reader
   /**
    * Gets the next line of the file. This updates the {@link #line} and
    * {@link #lineNumber} members.
-   * 
+   *
    * @throws IOException if an I/O error occurs.
    */
   protected void getNextLine() throws IOException
@@ -122,7 +132,8 @@ public abstract class HTMLReader implements Reader
    * an HTML tag at the front of it.
    * @throws FileFormatException if <code>line</code> is mal-formatted HTML.
    */
-  protected String extractTag(String line) throws IllegalArgumentException, FileFormatException
+  protected String extractTag(String line)
+      throws IllegalArgumentException, FileFormatException
   {
     // Eliminate errors due to whitespace before they start!
     line = line.trim().toLowerCase();
@@ -144,17 +155,17 @@ public abstract class HTMLReader implements Reader
     switch (line.charAt(i))
     {
       case 'b':
-        return line.substring(_bTag(line, close)).trim();
+        return line.substring(bTag(line, close)).trim();
 
       case 'e':
       case 'i':
-        return line.substring(_iTag(line, close)).trim();
+        return line.substring(iTag(line, close)).trim();
 
       case 'u':
-        return line.substring(_uTag(line, close)).trim();
+        return line.substring(uTag(line, close)).trim();
 
       case 'f':
-        return line.substring(_fontTag(line, close)).trim();
+        return line.substring(fontTag(line, close)).trim();
     }
 
     throw new IllegalArgumentException("Unrecognized tag:"+line);
@@ -162,19 +173,19 @@ public abstract class HTMLReader implements Reader
 
 
 
-  ////////////////////////////////////////////////////////////////////////////////
-  // ------------------------------- Tag Eating ------------------------------- //
-  ////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  // ------------------------------- Tag Eating ----------------------------- //
+  //////////////////////////////////////////////////////////////////////////////
 
   /**
    * Eats the passed tag from {@link #line}. The <code>tag</code> must be the
    * first thing to occur at the beginning of {@link #line} (not including
    * whitespace) otherwise the method will return <code>null</code>.
-   * 
+   *
    * @param tag The tag to be eaten.
    * @param errmsg The error message to put in the FileFormatException if it
    * needs to be thrown.
-   * 
+   *
    * @throws IOException if an I/O error occurs.
    * @throws FileFormatException If <code>errmsg</code> is not <code>null</code>
    * and the line did not start with the tag.
@@ -221,18 +232,18 @@ public abstract class HTMLReader implements Reader
             i += 7;
             while (line.charAt(i) == ' ' || line.charAt(i) == '\t') i++;
             if (line.charAt(i++) != '=')
-              throw _makeFFE("Excpected \"=\":", line, i);
+              throw newFFE("Excpected \"=\":", line, i);
             while (line.charAt(i) == ' ' || line.charAt(i) == '\t') i++;
 
             // Make sure it has a quote.
             if (line.charAt(i) != '"')
-              throw _makeFFE("\" expected:", line, i);
+              throw newFFE("\" expected:", line, i);
 
             // Check if it's numeric representation.
             if (line.charAt(i+1) == '#')
             {
               if (line.charAt(i+8) != '"')
-                throw _makeFFE("Unterminated string.", line, i);
+                throw newFFE("Unterminated string.", line, i);
 
               String RRGGBB = line.substring(i+2, i+8);
               int rgb = Integer.parseInt(RRGGBB, 16);
@@ -269,7 +280,7 @@ public abstract class HTMLReader implements Reader
               else if (color.equals("white"))
                 fs.pushBGColor(Color.white);
               else
-                throw _makeFFE("Unrecognized color:", line, i+2);
+                throw newFFE("Unrecognized color:", line, i+2);
 
               // update i.
               i = end+1;
@@ -277,7 +288,7 @@ public abstract class HTMLReader implements Reader
           }
           else
           {
-            throw _makeFFE("Unrecognized property:", line, i);
+            throw newFFE("Unrecognized property:", line, i);
           }
         }
         else if (line.charAt(i) == '>')
@@ -289,14 +300,14 @@ public abstract class HTMLReader implements Reader
         }
         else
         {
-          throw _makeFFE("Unrecognized or unexpected symbol:", line, i);
+          throw newFFE("Unrecognized or unexpected symbol:", line, i);
         }
       }
     }
 
-    throw _makeFFE("Malformatted file.", line, 0);
+    throw newFFE("Malformatted file.", line, 0);
   }
-  
+
   /**
    * Parse a <code>&lt;b%gt;</code> or <code>&lt;/b%gt;</code> tag.
    *
@@ -306,7 +317,7 @@ public abstract class HTMLReader implements Reader
    *
    * @throws FileFormatException If a parsing error occurs.
    */
-  private int _bTag(String line, boolean close) throws FileFormatException
+  private int bTag(String line, boolean close) throws FileFormatException
   {
     if (close)
     {
@@ -317,7 +328,7 @@ public abstract class HTMLReader implements Reader
         return 4;
       }
 
-      throw _makeFFE("Invalid </b> tag:",line,0);
+      throw newFFE("Invalid </b> tag:",line,0);
     }
     else
     {
@@ -328,7 +339,7 @@ public abstract class HTMLReader implements Reader
         return 3;
       }
 
-      throw _makeFFE("Invalid <b> tag:",line,0);
+      throw newFFE("Invalid <b> tag:",line,0);
     }
   }
 
@@ -342,7 +353,7 @@ public abstract class HTMLReader implements Reader
    *
    * @throws FileFormatException If a parsing error occurs.
    */
-  private int _iTag(String line, boolean close) throws FileFormatException
+  private int iTag(String line, boolean close) throws FileFormatException
   {
     if (close)
     {
@@ -359,7 +370,7 @@ public abstract class HTMLReader implements Reader
         return 5;
       }
 
-      throw _makeFFE("Invalid </i> or </em> tag:",line,0);
+      throw newFFE("Invalid </i> or </em> tag:",line,0);
     }
     else
     {
@@ -376,7 +387,7 @@ public abstract class HTMLReader implements Reader
         return 4;
       }
 
-      throw _makeFFE("Invalid <i> or <em> tag:",line,0);
+      throw newFFE("Invalid <i> or <em> tag:",line,0);
     }
   }
 
@@ -389,7 +400,7 @@ public abstract class HTMLReader implements Reader
    *
    * @throws FileFormatException If something goes wrong during parsing.
    */
-  private int _uTag(String line, boolean close) throws FileFormatException
+  private int uTag(String line, boolean close) throws FileFormatException
   {
     if (close)
     {
@@ -400,7 +411,7 @@ public abstract class HTMLReader implements Reader
         return 4;
       }
 
-      throw _makeFFE("Invalid </u> tag:",line,0);
+      throw newFFE("Invalid </u> tag:",line,0);
     }
     else
     {
@@ -411,10 +422,9 @@ public abstract class HTMLReader implements Reader
         return 3;
       }
 
-      throw _makeFFE("Invalid <u> tag:",line,0);
+      throw newFFE("Invalid <u> tag:",line,0);
     }
   }
-
 
   /**
    * Parse a <code>&lt;font%gt;</code> or <code>&lt;/font%gt;</code> tag.
@@ -426,7 +436,7 @@ public abstract class HTMLReader implements Reader
    * @throws FileFormatException if the <code>String</code> has something
    * cooky in it.
    */
-  private int _fontTag(String line, boolean close) throws FileFormatException
+  private int fontTag(String line, boolean close) throws FileFormatException
   {
     if (close)
     {
@@ -452,7 +462,7 @@ public abstract class HTMLReader implements Reader
         int s = -1;
         String f = null;
         Color c = null;
-        
+
         int i = 6;
         for (; i < line.length(); i++)
         {
@@ -466,7 +476,7 @@ public abstract class HTMLReader implements Reader
             if (line.substring(i,i+4).toLowerCase().equals("size"))
             {
               if (s != -1)
-                throw _makeFFE("Multiple font size definitions:",line,i+4);
+                throw newFFE("Multiple font size definitions:",line,i+4);
 
               int start = i+4;
               while (Character.isWhitespace(line.charAt(start)) ||
@@ -490,19 +500,19 @@ public abstract class HTMLReader implements Reader
             else if (line.substring(i,i+4).equals("face"))
             {
               if (f != null)
-                throw _makeFFE("Multiple font face definitions:",line,i+4);
+                throw newFFE("Multiple font face definitions:",line,i+4);
 
               int start = i+4;
               while (Character.isWhitespace(line.charAt(start)) ||
                   line.charAt(start) == '=') start++;
               if (line.charAt(start) != '\"')
-                throw _makeFFE("Missing quote:",line,start);
+                throw newFFE("Missing quote:",line,start);
 
               int end = start+1;
               while (line.charAt(end) == ' ' || line.charAt(end) == '\t' ||
                   Character.isWhitespace(line.charAt(end))) end++;
               if (line.charAt(end) != '\"')
-                throw _makeFFE("Missing quote:",line,end);
+                throw newFFE("Missing quote:",line,end);
 
               f = line.substring(start+1,end).trim();
               i = end;
@@ -511,21 +521,21 @@ public abstract class HTMLReader implements Reader
             else if (line.substring(i,i+5).equals("color"))
             {
               if (c != null)
-                throw _makeFFE("Multiple font color definitions:",line,i+5);
+                throw newFFE("Multiple font color definitions:",line,i+5);
 
               int start = i+5;
               while (Character.isWhitespace(line.charAt(start)) ||
                   line.charAt(start) == '=') start++;
               if (line.charAt(start) != '\"')
-                throw _makeFFE("Missing quote:",line,start);
+                throw newFFE("Missing quote:",line,start);
 
               int end = start+1;
               while (line.charAt(end) == ' ' || line.charAt(end) == '\t' ||
                   Character.isWhitespace(line.charAt(end))) end++;
               if (line.charAt(end) != '\"')
-                throw _makeFFE("Missing quote:",line,end);
+                throw newFFE("Missing quote:",line,end);
 
-              if (line.charAt(start+1) == '#')  
+              if (line.charAt(start+1) == '#')
               {
                 c = new Color(Integer.parseInt(line.substring(start+2,start+8), 16));
               }
@@ -551,14 +561,14 @@ public abstract class HTMLReader implements Reader
                 else if (color.equals("white"))
                   c = Color.white;
                 else
-                  throw _makeFFE("Unrecognized color:"+color,line,start+1);
+                  throw newFFE("Unrecognized color:"+color,line,start+1);
               }
 
               i = end;
             }
             else
             {
-              throw _makeFFE("Unrecognized attribute:",line,i);
+              throw newFFE("Unrecognized attribute:",line,i);
             }
           }
           else if (line.charAt(i) == '>')
@@ -568,7 +578,7 @@ public abstract class HTMLReader implements Reader
           }
           else
           {
-            throw _makeFFE("Invalid or mal-formatted <font> tag:",line,i);
+            throw newFFE("Invalid or mal-formatted <font> tag:",line,i);
           }
         }
       }
@@ -576,15 +586,15 @@ public abstract class HTMLReader implements Reader
       throw new IllegalArgumentException("Invalid or mal-formatted <font> tag:"+line);
     }
   }
-  
+
   /**
    * Builds an {@link FileFormatException} that looks pretty.
-   * 
+   *
    * @param msg The message to give the exception.
    * @param line The line that caused the exception.
    * @param idx The index in the line that caused the exception.
    */
-  private FileFormatException _makeFFE(String msg, String line, int idx)
+  private FileFormatException newFFE(String msg, String line, int idx)
   {
     StringBuffer buf = new StringBuffer();
     buf.append(msg);

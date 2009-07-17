@@ -31,8 +31,8 @@ public class Notification implements Event
     /** You were disconnected without wanting to be signed off. */
     DISCONNECT;
   }
-  
-  
+
+
 
   ////////////////////////////////////////////////////////////////////////////
   // ----------------------------- Actual Class --------------------------- //
@@ -41,7 +41,7 @@ public class Notification implements Event
   private Type type;        // The Type this Event is.
   private Date date;        // Date of occurance.
   private Timestamp time;   // The time this Event occurred.
-  
+
   /**
    * Creates a new <code>Notification</code> object with the passed parameters.
    */
@@ -51,7 +51,7 @@ public class Notification implements Event
     this.date = date;
     this.time = time;
   }
-  
+
   /**
    * Returns the <code>Type</code> of this object.
    *
@@ -61,11 +61,11 @@ public class Notification implements Event
   {
     return type;
   }
-  
+
   /**
    * Returns the {@link Date} object corresponding to when this
    * <code>Event</code> occurred.
-   * 
+   *
    * @return The {@link Date} object corresponding to when this
    *         <code>Event</code> occurred.
    */
