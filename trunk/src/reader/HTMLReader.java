@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -37,31 +38,26 @@ public abstract class HTMLReader implements Reader
   protected FontState fs;
 
   /**
-   * The root of the HTML document.
-   */
-  protected Document root;
-
-  /**
    * The Sessions stored in this log file.
    */
   protected Vector<Session> sessions;
 
-  /**
-   * The link to the file passed to {@link #loadFile(String)}. Should only
-   * be read in {@link #loadFile(String)}.  Will be null elsewhere.
-   */
-  protected BufferedReader reader;
-
-  /**
-   * The next line of input of input from the file passed to {@link #loadFile(String)}.
-   * Should only be referenced in {@link #loadFile(String)}.
-   */
-  protected String line;
-
-  /**
-   * The line number that {@link #line} represents in the file.
-   */
-  protected int lineNumber;
+//  /**
+//   * The link to the file passed to {@link #loadFile(String)}. Should only
+//   * be read in {@link #loadFile(String)}.  Will be null elsewhere.
+//   */
+//  protected BufferedReader reader;
+//
+//  /**
+//   * The next line of input of input from the file passed to {@link #loadFile(String)}.
+//   * Should only be referenced in {@link #loadFile(String)}.
+//   */
+//  protected String line;
+//
+//  /**
+//   * The line number that {@link #line} represents in the file.
+//   */
+//  protected int lineNumber;
 
   /**
    * Creates a new <code>FontState</code> object.
@@ -70,9 +66,9 @@ public abstract class HTMLReader implements Reader
   {
     fs = new FontState();
     sessions = new Vector<Session>();
-    reader = null;
-    line = null;
-    lineNumber = 0;
+//    reader = null;
+//    line = null;
+//    lineNumber = 0;
   }
 
   /**
@@ -87,7 +83,9 @@ public abstract class HTMLReader implements Reader
   {
     try
     {
-      return loadDocument(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(filename)));
+      DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
+      DocumentBuilder bldr = fac.newDocumentBuilder();
+      return loadDocument(bldr.parse(new File(filename)));
     }
     catch (SAXException saxe)
     {
