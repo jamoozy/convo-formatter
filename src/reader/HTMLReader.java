@@ -7,15 +7,45 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.html.HTML;
+import javax.swing.text.html.HTMLEditorKit;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+// Xamal XML parser.
+//import javax.xml.parsers.DocumentBuilder;
+//import javax.xml.parsers.DocumentBuilderFactory;
+//import javax.xml.parsers.ParserConfigurationException;
+
+// Swing-dependent version of an HTML parser.
+//import javax.swing.text.*;
+//import javax.swing.text.html.HTMLDocument;
+//import javax.swing.text.html.HTMLEditorKit;
+//import javax.swing.text.html.parser.Parser;
+
+//import org.xml.sax.SAXException;
+
+import com.sun.org.apache.xerces.internal.parsers.DOMParser;
+
+// XML elements.
+import org.htmlcleaner.BaseToken;
+import org.htmlcleaner.CleanerProperties;
+import org.htmlcleaner.ContentToken;
+import org.htmlcleaner.EndTagToken;
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.TagNode;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+//import org.xml.sax.SAXException;
+
+// HTML elements.
+//import org.w3c.dom.html.*;
 
 
 import formatter.FontState;
@@ -71,6 +101,11 @@ public abstract class HTMLReader implements Reader
 //    lineNumber = 0;
   }
 
+  public Iterator<Session> iterator()
+  {
+    return sessions.iterator();
+  }
+
   /**
    * This must be called at the top of the child class's <code>loadFile(String)</code>
    * method.
@@ -81,30 +116,119 @@ public abstract class HTMLReader implements Reader
    */
   public boolean loadFile(String filename) throws IOException
   {
-    try
-    {
-      DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
-      DocumentBuilder bldr = fac.newDocumentBuilder();
-      return loadDocument(bldr.parse(new File(filename)));
-    }
-    catch (SAXException saxe)
-    {
-      System.err.println(saxe.getMessage());
-      return false;
-    }
-    catch (ParserConfigurationException pce)
-    {
-      System.err.println(pce.getMessage());
-      return false;
-    }
+    CleanerProperties cp = new CleanerProperties();
+    cp.setOmitComments(false);
+    cp.setOmitDeprecatedTags(false);
+    cp.setOmitUnknownTags(false);
+    cp.setPruneTags("er?");
+    cp.setTreatDeprecatedTagsAsContent(false);
+    cp.setTreatUnknownTagsAsContent(false);
+    cp.setUseEmptyElementTags(true);
+    HtmlCleaner cleaner = new HtmlCleaner(cp);
+
+    File file = new File(filename);
+    if (!file.exists())
+      System.err.println("No such file! " + filename);
+    else
+      System.out.println("File: " + file.getAbsolutePath());
+    return loadDocument(cleaner.clean(file));
+//    try
+//    {
+//      parser.parse(filename);
+//    }
+//    catch (SAXException saxe)
+//    {
+//      System.err.println("Encountered SAX exception:\n" + saxe.getMessage());
+//      throw new IOException("SAX exception.");
+//    }
+//    return loadDocument(parser.getDocument());
+//    try
+//    {
+//      HTMLEditorKit.ParserCallback callback =
+//        new HTMLEditorKit.ParserCallback()
+//        {
+//          public void flush()
+//          {
+//            HTMLReader.this.flush();
+//          }
+//
+//          public void handleComment(char[] data, int pos)
+//          {
+//            HTMLReader.this.handleComment(data, pos);
+//          }
+//
+//          public void handleEndOfLineString(String eol)
+//          {
+//            HTMLReader.this.handleEndOfLineString(eol);
+//          }
+//
+//          public void handleEndTag(HTML.Tag t, int pos)
+//          {
+//            HTMLReader.this.handleEndTag(t, pos);
+//          }
+//
+//          public void handleError(String errorMsg, int pos)
+//          {
+//            HTMLReader.this.handleError(errorMsg, pos);
+//          }
+//
+//          public void handleSimpleTag(HTML.Tag t, MutableAttributeSet a, int pos)
+//          {
+//            HTMLReader.this.handleSimpleTag(t, a, pos);
+//          }
+//
+//          public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos)
+//          {
+//            HTMLReader.this.handleStartTag(t, a, pos);
+//          }
+//
+//          public void handleText(char[] data, int pos)
+//          {
+//            HTMLReader.this.handleText(data, pos);
+//          }
+//        };
+//      DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
+//      DocumentBuilder bldr = fac.newDocumentBuilder();
+//      bldr.parse(filename);
+//      return true;
+//    }
+//    catch (SAXException saxe)
+//    {
+//      System.err.println(saxe.getMessage());
+//      return false;
+//    }
+//    catch (ParserConfigurationException pce)
+//    {
+//      System.err.println(pce.getMessage());
+//      return false;
+//    }
   }
+  
+  abstract protected boolean loadDocument(TagNode root);
+
+  protected void flush() { }
+
+  protected void handleComment(char[] data, int pos) { }
+
+  protected void handleEndOfLineString(String eol) { }
+
+  protected void handleEndTag(HTML.Tag t, int pos) { }
+
+  protected void handleError(String errorMsg, int pos) { }
+
+  protected void handleSimpleTag(HTML.Tag t, MutableAttributeSet a, int pos) { }
+
+  protected void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) { }
+
+  protected void handleText(char[] data, int pos) { }
+
 
   /**
    * Loads the document root into the {@link #sessions} array.
    * @param root The root of the document.
    * @return <code>true</code> on success, <code>false</code> o.w.
    */
-  protected abstract boolean loadDocument(Document root);
+//  protected abstract boolean loadDocument(TagNode root);
 
   /**
    * Gets the next line of the file. This updates the {@link #line} and

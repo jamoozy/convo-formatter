@@ -6,70 +6,82 @@ import java.util.Iterator;
 import java.util.Vector;
 
 /**
- * <code>Messages</code> are logical combinations of a sender, time stamp, and text
- * with font.  They are the small strings of text that you send back and forth in IMs.
- *
+ * <code>Messages</code> are logical combinations of a sender, time stamp, and
+ * text with font. They are the small strings of text that you send back and
+ * forth in IMs.
+ * 
  * @author Andrew Correa
  */
 public class Message implements Event
 {
   /** The SN of the person who sent this message. */
-  private String sender;
+  private final String sender;
   /** The time this Message was sent. */
-  private Timestamp time;
+  private final Timestamp time;
   /** The different parts of the message string. */
-  private Vector<Part> parts;
+  private final Vector<Part> parts;
   /** The font color of the text of the message. */
   private Color color;
   /** The font of the message. */
-  private Font font;
+  private final Font font;
   /** True if this was an auto-reply. */
-  private boolean auto;
+  private final boolean auto;
 
   /**
    * Creates a new <code>Message</code>.&nbsp;Assumes black-on-white text.
-   *
-   * @param sender Screen name of the sender.
-   * @param time The time the message was sent.
-   * @param message The text of the message.
-   * @param auto Whether this is an auto-generated message or not.
+   * 
+   * @param sender
+   *          Screen name of the sender.
+   * @param time
+   *          The time the message was sent.
+   * @param message
+   *          The text of the message.
+   * @param auto
+   *          Whether this is an auto-generated message or not.
    */
   public Message(String sender, Timestamp time, String message, boolean auto)
   {
-    this(sender, time, message, Color.BLACK, new Font("arial", Font.PLAIN, 12), auto);
+    this(sender, time, message, Color.BLACK, new Font("arial", Font.PLAIN, 12),
+        auto);
   }
 
   /**
    * Creates a new <code>Message</code>.
-   *
-   * @param sender Screen name of the sender.
-   * @param time The time the message was sent.
-   * @param message The text of the message.
-   * @param color The color of the text of the message.
-   * @param font The font the message should be in.
-   * @param auto Whether this is an auto-generated message or not.
+   * 
+   * @param sender
+   *          Screen name of the sender.
+   * @param time
+   *          The time the message was sent.
+   * @param message
+   *          The text of the message.
+   * @param color
+   *          The color of the text of the message.
+   * @param font
+   *          The font the message should be in.
+   * @param auto
+   *          Whether this is an auto-generated message or not.
    */
-  public Message(String sender, Timestamp time, String message, Color color, Font font, boolean auto)
+  public Message(String sender, Timestamp time, String message, Color color,
+      Font font, boolean auto)
   {
     this.sender = sender;
     this.time = time;
-//    this.message = message;
+    // this.message = message;
     parts = new Vector<Part>();
-    parts.add(new Part(message, "Arial", Color.black, 12, false, false));
+    if (message != null)
+      parts.add(new Part(message, "Arial", Color.black, 12, false, false));
     this.color = color;
     this.font = font;
     this.auto = auto;
   }
 
-
-
-  ////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////
   // --------------------------- Simple getters --------------------------- //
-  ////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////
 
   /**
    * Gets the screenname of the sender of this message.
-   *
+   * 
    * @return The screenname of the sender.
    */
   public String getSender()
@@ -78,14 +90,15 @@ public class Message implements Event
   }
 
   /**
-   * Gets the text of the message sent.  This method ignores any formatting
+   * Gets the text of the message sent. This method ignores any formatting
    * information stored with the string.
-   *
+   * 
    * @return The text of the message, without any formatting information.
    */
   public String getMessage()
   {
-    if (parts.size() == 0) return "";
+    if (parts.size() == 0)
+      return "";
     Iterator<Part> iter = parts.iterator();
     StringBuffer message = new StringBuffer(iter.next().message);
     while (iter.hasNext())
@@ -95,7 +108,7 @@ public class Message implements Event
 
   /**
    * Gets the font Color of the message.
-   *
+   * 
    * @return The font color of the message.
    */
   public Color getColor()
@@ -105,7 +118,7 @@ public class Message implements Event
 
   /**
    * Gets the font face of the message.
-   *
+   * 
    * @return The font face.
    */
   public Font getFont()
@@ -115,7 +128,7 @@ public class Message implements Event
 
   /**
    * Gets the Time this message was sent.
-   *
+   * 
    * @return The time the message was sent.
    */
   public Timestamp getTimestamp()
@@ -126,7 +139,7 @@ public class Message implements Event
   /**
    * Returns <code>true</code> when the <code>Message</code> is auto-generated
    * and <code>false</code> when it is not.
-   *
+   * 
    * @return Whether this is an auto-generated message or not.
    */
   public boolean isAutoGenerated()
@@ -134,49 +147,61 @@ public class Message implements Event
     return auto;
   }
 
-
-
-  ////////////////////////////////////////////////////////////////////////////////
-  // --------------------------------- Append --------------------------------- //
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
+  // --------------------------------- Append ---------------------------------
+  // //
+  // //////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Appends the text of the {@link String} to the end of this <code>Message</code>
-   *
-   * @param msg The text to append to the end of this <code>Message</code>.
+   * Appends the text of the {@link String} to the end of this
+   * <code>Message</code>
+   * 
+   * @param msg
+   *          The text to append to the end of this <code>Message</code>.
    */
   public void append(String msg)
   {
-    parts.add(new Part(msg,"Arial",Color.black, 12, false, false));
+    parts.add(new Part(msg, "Arial", Color.black, 12, false, false));
   }
 
   /**
-   * Appends the text of the {@link String} to the end of this <code>Message</code>
-   *
-   * @param msg The text to append to the end of this <code>Message</code>.
-   * @param f The font name of this part of the message.
-   * @param c The color of this part of the message.
+   * Appends the text of the {@link String} to the end of this
+   * <code>Message</code>
+   * 
+   * @param msg
+   *          The text to append to the end of this <code>Message</code>.
+   * @param f
+   *          The font name of this part of the message.
+   * @param c
+   *          The color of this part of the message.
    */
   public void append(String msg, String f, Color c)
   {
-    parts.add(new Part(msg,f,c, 12, false, false));
+    parts.add(new Part(msg, f, c, 12, false, false));
   }
 
   /**
-   * Appends the text of the {@link String} to the end of this <code>Message</code>
-   *
-   * @param msg The text to append to the end of this <code>Message</code>.
-   * @param f The font name of this part of the message.
-   * @param c The color of this part of the message.
-   * @param s The size of the font in pts.
-   * @param b <code>true</code> if the appended part of the message is bold,
+   * Appends the text of the {@link String} to the end of this
+   * <code>Message</code>
+   * 
+   * @param msg
+   *          The text to append to the end of this <code>Message</code>.
+   * @param f
+   *          The font name of this part of the message.
+   * @param c
+   *          The color of this part of the message.
+   * @param s
+   *          The size of the font in pts.
+   * @param b
+   *          <code>true</code> if the appended part of the message is bold,
    *          <code>false</code> otherwise.
-   * @param i <code>true</code> if the appended part of the message is italicized,
-   *          <code>false</code> otherwise.
+   * @param i
+   *          <code>true</code> if the appended part of the message is
+   *          italicized, <code>false</code> otherwise.
    */
   public void append(String msg, String f, Color c, int s, boolean b, boolean i)
   {
-    parts.add(new Part(msg,f,c,s,b,i));
+    parts.add(new Part(msg, f, c, s, b, i));
   }
 
   /**
@@ -184,20 +209,32 @@ public class Message implements Event
    */
   public void appendNewline()
   {
-    parts.add(new Part("\n","Arial",Color.black,12,false,false));
+    parts.add(new Part("\n", "Arial", Color.black, 12, false, false));
   }
 
+  @Override
+  public String toString()
+  {
+    StringBuffer buf = new StringBuffer();
+    buf.append(sender);
+    buf.append(" ");
+    buf.append(time);
+    buf.append(": ");
+    for (Iterator<Part> iter = parts.iterator(); iter.hasNext();)
+      buf.append(iter.next().getMessage());
+    return buf.toString();
+  }
 
-
-  ////////////////////////////////////////////////////////////////////////////////
-  // --------------------------- Message Parts -------------------------------- //
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
+  // --------------------------- Message Parts --------------------------------
+  // //
+  // //////////////////////////////////////////////////////////////////////////////
 
   /**
-   * This is a part of a message.  It allows individual parts of the message
-   * as a whole to carry different formatting information.  For example, one
-   * part could be bold and italicized, while another is in a different font
-   * and a different color.
+   * This is a part of a message. It allows individual parts of the message as a
+   * whole to carry different formatting information. For example, one part
+   * could be bold and italicized, while another is in a different font and a
+   * different color.
    */
   public class Part
   {
@@ -215,17 +252,23 @@ public class Message implements Event
     boolean italic;
 
     /**
-     * Creates a new part.  This should be added to the <code>parts Vector</code>
+     * Creates a new part. This should be added to the <code>parts Vector</code>
      * of the <code>Message</code> class.
-     *
-     * @param msg The text to append to the end of this <code>Message</code>.
-     * @param f The font name of this part of the message.
-     * @param c The color of this part of the message.
-     * @param s The size of the font in pts.
-     * @param b <code>true</code> if the appended part of the message is bold,
+     * 
+     * @param msg
+     *          The text to append to the end of this <code>Message</code>.
+     * @param f
+     *          The font name of this part of the message.
+     * @param c
+     *          The color of this part of the message.
+     * @param s
+     *          The size of the font in pts.
+     * @param b
+     *          <code>true</code> if the appended part of the message is bold,
      *          <code>false</code> otherwise.
-     * @param i <code>true</code> if the appended part of the message is italicized,
-     *          <code>false</code> otherwise.
+     * @param i
+     *          <code>true</code> if the appended part of the message is
+     *          italicized, <code>false</code> otherwise.
      */
     public Part(String msg, String f, Color c, int s, boolean b, boolean i)
     {
